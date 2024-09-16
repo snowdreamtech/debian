@@ -1,10 +1,23 @@
 FROM debian:12.7-slim
 
-LABEL maintainer="snowdream <sn0wdr1am@qq.com>"
+# OCI annotations to image
+LABEL org.opencontainers.image.authors="Snowdream Tech" \
+      org.opencontainers.image.title="Debian Base Image" \
+      org.opencontainers.image.description="Docker Images for Debian. (i386,amd64,arm32v5,arm32v7,arm64,mips64le,ppc64le,s390x)" \
+      org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/debian" \
+      org.opencontainers.image.base.name="snowdreamtech/debian:latest" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://github.com/snowdreamtech/debian" \
+      org.opencontainers.image.vendor="Snowdream Tech" \
+      org.opencontainers.image.version="12.7" \
+      org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
 
-# keep the docker container running
-ENV KEEPALIVE=0 \
-    DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    # keep the docker container running
+    KEEPALIVE=0 \
+    # Ensure the container exec commands handle range of utf8 characters based of
+    # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
+    LANG=C.UTF-8 
 
 RUN set -eux \
     && apt-get -qqy update  \
