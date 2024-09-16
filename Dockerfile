@@ -9,6 +9,7 @@ ENV KEEPALIVE=0 \
 RUN set -eux \
     && apt-get -qqy update  \
     && apt-get -qqy install --no-install-recommends \ 
+    procps \
     sudo \
     vim \ 
     unzip \
