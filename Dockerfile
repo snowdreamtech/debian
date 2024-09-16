@@ -6,9 +6,9 @@ LABEL maintainer="snowdream <sn0wdr1am@qq.com>"
 ENV KEEPALIVE=0 \
     DEBIAN_FRONTEND=noninteractive
 
-RUN set -eux; \
-        apt-get -qqy update && \
-    apt-get -qqy install --no-install-recommends \ 
+RUN set -eux \
+    && apt-get -qqy update  \
+    && apt-get -qqy install --no-install-recommends \ 
     sudo \
     vim \ 
     unzip \
