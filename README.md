@@ -1,8 +1,8 @@
-# Alpine
+# debian
 
-[![Alpine](http://dockeri.co/image/snowdreamtech/alpine)](https://hub.docker.com/r/snowdreamtech/alpine)
+[![debian](http://dockeri.co/image/snowdreamtech/debian)](https://hub.docker.com/r/snowdreamtech/debian)
 
-Docker Image packaging for Alpine. (amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le,riscv64, s390x)
+Docker Image packaging for debian. (amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le,riscv64, s390x)
 
 # Usage
 
@@ -14,21 +14,21 @@ To help you get started creating a container from this image you can either use 
 
 ```bash
 docker run -d \
-  --name=alpine \
+  --name=debian \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
-  snowdreamtech/alpine:latest
+  snowdreamtech/debian:latest
 ```
 
 ### Advance
 
 ```bash
 docker run -d \
-  --name=alpine \
+  --name=debian \
   -e TZ=Asia/Shanghai \
   -v /path/to/data:/path/to/data \
   --restart unless-stopped \
-  snowdreamtech/alpine:latest
+  snowdreamtech/debian:latest
 ```
 
 ## Docker Compose
@@ -39,9 +39,9 @@ docker run -d \
 version: "3"
 
 services:
-  alpine:
-    image: snowdreamtech/alpine:latest
-    container_name: alpine
+  debian:
+    image: snowdreamtech/debian:latest
+    container_name: debian
     environment:
       - TZ=Asia/Shanghai
     restart: unless-stopped
@@ -53,9 +53,9 @@ services:
 version: "3"
 
 services:
-  alpine:
-    image: snowdreamtech/alpine:latest
-    container_name: alpine
+  debian:
+    image: snowdreamtech/debian:latest
+    container_name: debian
     environment:
       - TZ=Asia/Shanghai
     volumes:
@@ -67,7 +67,7 @@ services:
 
 ```bash
 docker buildx create --use --name build --node build --driver-opt network=host
-docker buildx build -t snowdreamtech/alpine --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x . --push
+docker buildx build -t snowdreamtech/debian --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x . --push
 ```
 
 ## Reference
@@ -80,7 +80,7 @@ docker buildx build -t snowdreamtech/alpine --platform=linux/386,linux/amd64,lin
 1. [Faster Multi-Platform Builds: Dockerfile Cross-Compilation Guide](https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/)
 1. [docker/buildx](https://github.com/docker/buildx)
 
-## Contact (备注：alpine)
+## Contact (备注：debian)
 
 * Email: sn0wdr1am@qq.com
 * QQ: 3217680847
