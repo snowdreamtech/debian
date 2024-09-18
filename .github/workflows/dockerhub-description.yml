@@ -4,10 +4,11 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - "*"
     paths:
       - README.md
       - .github/workflows/dockerhub-description.yml
+      
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
