@@ -2,15 +2,15 @@ FROM debian:12.7-slim
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
-      org.opencontainers.image.title="Debian Base Image" \
-      org.opencontainers.image.description="Docker Images for Debian. (i386,amd64,arm32v5,arm32v7,arm64,mips64le,ppc64le,s390x)" \
-      org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/debian" \
-      org.opencontainers.image.base.name="snowdreamtech/debian:latest" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/snowdreamtech/debian" \
-      org.opencontainers.image.vendor="Snowdream Tech" \
-      org.opencontainers.image.version="12.7" \
-      org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
+    org.opencontainers.image.title="Debian Base Image" \
+    org.opencontainers.image.description="Docker Images for Debian. (i386,amd64,arm32v5,arm32v7,arm64,mips64le,ppc64le,s390x)" \
+    org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/debian" \
+    org.opencontainers.image.base.name="snowdreamtech/debian:latest" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.source="https://github.com/snowdreamtech/debian" \
+    org.opencontainers.image.vendor="Snowdream Tech" \
+    org.opencontainers.image.version="12.7" \
+    org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     # keep the docker container running
