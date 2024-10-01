@@ -4,7 +4,25 @@ name: GitHub Actions Version Updater
 on:
   push:
     branches:
-      - main
+      - "main"
+      - "dev"
+      - "feat/**"
+      - "feature/**"
+      - "fix/**"
+      - "pr/**"
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "V[0-9]+.[0-9]+.[0-9]+"
+      - "alpine-[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    branches:
+      - "main"
+      - "dev"
+      - "feat/**"
+      - "feature/**"
+      - "fix/**"
+      - "pr/**"
   schedule:
     # Automatically run on every Day
     - cron: "0 17 * * *"
