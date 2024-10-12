@@ -40,7 +40,7 @@ jobs:
     runs-on: 1H1G
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           # [Required] Access token with `workflow` scope.
           token: ${{ secrets.WORKFLOW_SECRET }}
@@ -62,7 +62,7 @@ jobs:
         # https://github.com/docker/buildx/issues/136#issuecomment-550205439
         # docker buildx create --driver-opt env.http_proxy=$http_proxy --driver-opt env.https_proxy=$https_proxy --driver-opt '"env.no_proxy='$no_proxy'"'
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.7.0
+        uses: docker/setup-buildx-action@v3.7.1
         with:
           buildkitd-config: .github/buildkitd.toml
           driver-opts: |
