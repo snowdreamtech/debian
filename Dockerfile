@@ -30,6 +30,8 @@ RUN set -eux \
     openssl \
     wget \
     curl \
+    iputils-ping \
+    lsof \
     apt-transport-https \
     ca-certificates \                                                                                                                                                                                                      
     && update-ca-certificates\
