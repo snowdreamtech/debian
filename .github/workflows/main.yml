@@ -68,7 +68,7 @@ jobs:
           driver-opts: |
             env.http_proxy=${{ env.http_proxy }}
             env.https_proxy=${{ env.http_proxy }}
-            env.no_proxy=${{ env.no_proxy }}
+            "env.no_proxy='${{ env.no_proxy}}'"
       - name: Login to DockerHub
         uses: docker/login-action@v3.3.0
         with:
@@ -116,9 +116,8 @@ jobs:
         with:
           context: .
           build-args: |
-            http_proxy=${{ env.http_proxy }}
-            https_proxy=${{ env.http_proxy }}
-            env.no_proxy=${{ env.no_proxy }}
+            "http_proxy=${{ env.http_proxy }}"
+            "https_proxy=${{ env.http_proxy }}"
             BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
             VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
             REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
