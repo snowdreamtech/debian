@@ -28,6 +28,7 @@ RUN set -eux \
     unzip \
     tzdata \
     openssl \
+    aptitude \
     wget \
     curl \
     iputils-ping \
