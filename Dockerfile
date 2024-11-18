@@ -41,7 +41,7 @@ RUN set -eux \
     wget \
     curl \
     dnsutils \
-    netcat \
+    netcat-traditional \
     traceroute \
     iputils-ping \
     net-tools \
