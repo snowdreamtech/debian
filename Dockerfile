@@ -22,16 +22,29 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN set -eux \
     && apt-get -qqy update  \
     && apt-get -qqy install --no-install-recommends \ 
+    lsb-release \
     procps \
     sudo \
     vim \ 
+    zip \
     unzip \
+    bzip2 \
+    xz-utils \
+    file \
+    gzip \
+    jq \
     tzdata \
     openssl \
+    gnupg \
     aptitude \
+    sysstat \
     wget \
     curl \
+    dnsutils \
+    netcat \
+    traceroute \
     iputils-ping \
+    net-tools \
     lsof \
     apt-transport-https \
     ca-certificates \                                                                                                                                                                                                      
