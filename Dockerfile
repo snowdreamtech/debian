@@ -36,7 +36,6 @@ RUN set -eux \
     tzdata \
     openssl \
     gnupg \
-    aptitude \
     sysstat \
     wget \
     curl \
