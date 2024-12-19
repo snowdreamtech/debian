@@ -17,7 +17,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     KEEPALIVE=0 \
     # Ensure the container exec commands handle range of utf8 characters based of
     # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
-    LANG=C.UTF-8 
+    LANG=C.UTF-8 \
+    GID=1000 \
+    UID=1000  \
+    USER=
 
 RUN set -eux \
     && apt-get -qqy update  \
@@ -56,6 +59,18 @@ RUN set -eux \
     && rm -rf /var/tmp/* \
     && sed -i "s|Suites:\s*bookworm\s*bookworm-updates.*|Suites: bookworm bookworm-updates bookworm-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
+
+RUN set -eux \
+    &&if [ "${USER}" != "" ]; then \
+    addgroup --gid ${GID} ${USER}; \
+    adduser --home /home/${USER} --uid ${UID} --gid ${GID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
+    sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
+    fi \
+    && apt-get -qqy --purge autoremove \
+    && apt-get -qqy clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/* 
 
 COPY vimrc.local /etc/vim/vimrc.local
 
