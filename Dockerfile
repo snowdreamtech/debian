@@ -21,7 +21,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 ARG GID=1000 \
     UID=1000  \
-    USER= 
+    USER=root \
+    WORKDIR=/root
 
 RUN set -eux \
     && apt-get -qqy update  \
@@ -61,17 +62,24 @@ RUN set -eux \
     && sed -i "s|Suites:\s*bookworm\s*bookworm-updates.*|Suites: bookworm bookworm-updates bookworm-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
 
+# Create a user with UID and GID
 RUN set -eux \
-    &&if [ "${USER}" != "" ]; then \
+    &&if [ "${USER}" != "root" ]; then \
     addgroup --gid ${GID} ${USER}; \
     adduser --home /home/${USER} --uid ${UID} --gid ${GID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
-    sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
+    # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
     fi \
     && apt-get -qqy --purge autoremove \
     && apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* 
+
+# Switch to the user
+USER ${USER}
+
+# Set the workdir
+WORKDIR ${WORKDIR}
 
 COPY vimrc.local /etc/vim/vimrc.local
 
