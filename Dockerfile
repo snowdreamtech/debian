@@ -28,8 +28,8 @@ ARG GID=1000 \
     WORKDIR=/root
 
 RUN set -eux \
-    && apt-get -qqy update  \
-    && apt-get -qqy install --no-install-recommends \ 
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
     lsb-release \
     procps \
     sudo \
@@ -57,8 +57,8 @@ RUN set -eux \
     apt-transport-https \
     ca-certificates \                                                                                                                                                                                                      
     && update-ca-certificates\
-    && apt-get -qqy --purge autoremove \
-    && apt-get -qqy clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \
@@ -72,8 +72,8 @@ RUN set -eux \
     adduser --home /home/${USER} --uid ${UID} --gid ${GID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
     fi \
-    && apt-get -qqy --purge autoremove \
-    && apt-get -qqy clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* 
@@ -81,12 +81,12 @@ RUN set -eux \
 # Enable CAP_NET_BIND_SERVICE
 RUN set -eux \
     && if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
-    apt-get -qqy update; \
-    apt-get -qqy install --no-install-recommends libcap2-bin; \
+    DEBIAN_FRONTEND=noninteractive apt-get -qqy update; \
+    DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends libcap2-bin; \
     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     fi \
-    && apt-get -qqy --purge autoremove \
-    && apt-get -qqy clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* 
