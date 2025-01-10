@@ -11,6 +11,12 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.vendor="Snowdream Tech" \
     org.opencontainers.image.version="12.8" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
+    
+# Switch to the user
+USER root
+
+# Set the workdir
+WORKDIR /root
 
 ENV DEBIAN_FRONTEND=noninteractive \
     # keep the docker container running
