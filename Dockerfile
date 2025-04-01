@@ -1,4 +1,4 @@
-FROM debian:12.10-slim
+FROM debian:11.10-slim
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/debian" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="12.10" \
+    org.opencontainers.image.version="11.10" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
     
 # Switch to the user
@@ -69,7 +69,7 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \
-    && sed -i "s|Suites:\s*bookworm\s*bookworm-updates.*|Suites: bookworm bookworm-updates bookworm-backports|g" /etc/apt/sources.list.d/debian.sources \
+    && sed -i "s|Suites:\s*bullseye\s*bullseye-updates.*|Suites: bullseye bullseye-updates bullseye-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
 
 # Create a user with UID and GID
