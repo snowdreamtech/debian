@@ -54,6 +54,7 @@ RUN set -eux \
     sysstat \
     wget \
     curl \
+    git \
     dnsutils \
     netcat-traditional \
     traceroute \
