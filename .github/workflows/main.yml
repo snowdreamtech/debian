@@ -123,8 +123,8 @@ jobs:
             type=edge,enable=true,priority=700,prefix=,suffix=,branch=dev
             type=raw,enable=${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=latest
             type=raw,enable=${{ startsWith(github.ref, 'refs/tags/') }},priority=200,prefix=,suffix=,value=latest
-            type=raw,enable=${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=bookworm
-            type=raw,enable=${{ startsWith(github.ref, 'refs/tags/') }},priority=200,prefix=,suffix=,value=bookworm
+            type=raw,enable=${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=bullseye
+            type=raw,enable=${{ startsWith(github.ref, 'refs/tags/') }},priority=200,prefix=,suffix=,value=bullseye
             type=schedule,enable=true,priority=1000,prefix=,suffix=,pattern=nightly
             type=match,enable=true,priority=800,prefix=,suffix=,pattern=\d+.\d+.\d+,group=0,value=
             type=match,enable=true,priority=800,prefix=,suffix=,pattern=\d+.\d+,group=0,value=
