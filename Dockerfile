@@ -69,7 +69,7 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \
-    && sed -i "s|Suites:\s*bullseye\s*bullseye-updates.*|Suites: bullseye bullseye-updates bullseye-backports|g" /etc/apt/sources.list.d/debian.sources \
+    # && sed -i "s|Suites:\s*bullseye\s*bullseye-updates.*|Suites: bullseye bullseye-updates bullseye-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
 
 # Create a user with UID and GID
