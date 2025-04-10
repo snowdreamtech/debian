@@ -1,6 +1,6 @@
 # debian
 
-[![debian](http://dockeri.co/image/snowdreamtech/debian)](https://hub.docker.com/r/snowdreamtech/debian)
+[![dockeri.co](https://dockerico.blankenship.io/image/snowdreamtech/debian)](https://hub.docker.com/r/snowdreamtech/debian)
 
 Docker Image packaging for debian. (amd64, arm32v5, arm32v7, arm64v8, i386,mips64le, ppc64le, s390x)
 
