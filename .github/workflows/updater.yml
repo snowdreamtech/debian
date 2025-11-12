@@ -21,8 +21,8 @@ on:
       - "fix/**"
       - "pr/**"
   schedule:
-    # Automatically run on every Day
-    - cron: "30 16 * * *"
+    # Automatically run on every Week
+    - cron: "0 0 * * 0"
   workflow_dispatch:
 
 jobs:
