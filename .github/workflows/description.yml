@@ -27,11 +27,11 @@ jobs:
           provider: dockerhub
           short_description: ${{ github.event.repository.description }}
           readme_file: "README.md"
-      - name: Quay.io Description
-        uses: christian-korneck/update-container-description-action@v1
-        env:
-          DOCKER_APIKEY: ${{ secrets.QUAY_API_TOKEN }}
-        with:
-          destination_container_repo: quay.io/snowdreamtech/debian
-          provider: quay
-          readme_file: "README.md"
+      # - name: Quay.io Description
+      #   uses: christian-korneck/update-container-description-action@v1
+      #   env:
+      #     DOCKER_APIKEY: ${{ secrets.QUAY_API_TOKEN }}
+      #   with:
+      #     destination_container_repo: quay.io/snowdreamtech/debian
+      #     provider: quay
+      #     readme_file: "README.md"
