@@ -18,6 +18,38 @@ USER root
 # Set the workdir
 WORKDIR /root
 
+# keep the docker container running
+ARG DEBIAN_FRONTEND=noninteractive \
+    KEEPALIVE=0 \
+    # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
+    # which are port numbers less than 1024. 
+    CAP_NET_BIND_SERVICE=0 \
+    # Ensure the container exec commands handle range of utf8 characters based of
+    # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
+    LANG=C.UTF-8\
+    UMASK=022 \
+    DEBUG=false \
+    PGID=0 \
+    PUID=0  \
+    USER=root \
+    WORKDIR=/root 
+
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
+    # keep the docker container running
+    KEEPALIVE=${KEEPALIVE} \
+    # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
+    # which are port numbers less than 1024. 
+    CAP_NET_BIND_SERVICE=${CAP_NET_BIND_SERVICE} \
+    # Ensure the container exec commands handle range of utf8 characters based of
+    # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
+    LANG=${LANG} \
+    UMASK=${UMASK} \
+    DEBUG=${DEBUG} \
+    PGID=${PGID} \
+    PUID=${PUID}  \
+    USER=${USER} \
+    WORKDIR=${WORKDIR} 
+
 ENV DEBIAN_FRONTEND=noninteractive \
     # keep the docker container running
     KEEPALIVE=0 \
@@ -27,11 +59,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Ensure the container exec commands handle range of utf8 characters based of
     # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
     LANG=C.UTF-8
-
-ARG GID=1000 \
-    UID=1000  \
-    USER=root \
-    WORKDIR=/root
 
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
@@ -55,6 +82,8 @@ RUN set -eux \
     wget \
     curl \
     git \
+    libcap2-bin \
+    gosu \
     dnsutils \
     netcat-traditional \
     traceroute \
@@ -72,40 +101,25 @@ RUN set -eux \
     && sed -i "s|Suites:\s*bookworm\s*bookworm-updates.*|Suites: bookworm bookworm-updates bookworm-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
 
-# Create a user with UID and GID
-RUN set -eux \
-    && if [ "${USER}" != "root" ]; then \
-    addgroup --gid ${GID} ${USER}; \
-    adduser --home /home/${USER} --uid ${UID} --gid ${GID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
+# Create a user with PUID and PGID
+RUN if [ "${USER}" != "root" ]; then \
+    addgroup --gid ${PGID} ${USER}; \
+    adduser --home /home/${USER} --uid ${PUID} --gid ${PGID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
-    fi \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/* 
+    fi
 
 # Enable CAP_NET_BIND_SERVICE
-RUN set -eux \
-    && if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
-    DEBIAN_FRONTEND=noninteractive apt-get -qqy update; \
-    DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends libcap2-bin; \
-    # setcap 'cap_net_bind_service=+ep' `which nginx`; \
-    fi \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/* 
-
-# Switch to the user
-USER ${USER}
-
-# Set the workdir
-WORKDIR ${WORKDIR}
+# RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
+#     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
+#     fi
 
 COPY vimrc.local /etc/vim/vimrc.local
 
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY entrypoint.d /usr/local/bin/entrypoint.d
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.d/*
 
 ENTRYPOINT ["docker-entrypoint.sh"]
