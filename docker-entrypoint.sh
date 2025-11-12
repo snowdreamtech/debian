@@ -1,16 +1,16 @@
 #!/bin/sh
 set -e
 
-# exec commands
-if [ -n "$*" ]; then
-    sh -c "$*"
-fi
+if [ "$DEBUG" = "true" ]; then echo "→ [ENTRYPOINT] Executing all scripts in /usr/local/bin/entrypoint.d"; fi    
 
-# keep the docker container running
-# https://github.com/docker/compose/issues/1926#issuecomment-422351028
-if [ "${KEEPALIVE}" -eq 1 ]; then
-    trap : TERM INT
-    tail -f /dev/null &
-    wait
-    # sleep infinity & wait
-fi
+for script in /usr/local/bin/entrypoint.d/*; do
+  if [ -x "$script" ]; then
+    if [ "$DEBUG" = "true" ]; then echo "→ Running $script"; fi    
+    "$script" "$*"
+  else
+    if [ "$DEBUG" = "true" ]; then echo "⚠️ Skipping $script (not executable)"; fi    
+  fi
+done
+
+
+if [ "$DEBUG" = "true" ]; then echo "→ [ENTRYPOINT] Done."; fi    
