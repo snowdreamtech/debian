@@ -98,7 +98,7 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \
-    && sed -i "s|Suites:\s*bookworm\s*bookworm-updates.*|Suites: bookworm bookworm-updates bookworm-backports|g" /etc/apt/sources.list.d/debian.sources \
+    && sed -i "s|Suites:\s*trixie\s*trixie-updates.*|Suites: trixie trixie-updates trixie-backports|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc 
 
 # Create a user with PUID and PGID
