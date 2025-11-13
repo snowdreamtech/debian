@@ -1,4 +1,4 @@
-FROM debian:12.11-slim
+FROM debian:12.12-slim
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/debian" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="12.11" \
+    org.opencontainers.image.version="12.12" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/debian"
     
 # Switch to the user
