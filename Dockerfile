@@ -50,16 +50,6 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    # keep the docker container running
-    KEEPALIVE=0 \
-    # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
-    # which are port numbers less than 1024. 
-    CAP_NET_BIND_SERVICE=0 \
-    # Ensure the container exec commands handle range of utf8 characters based of
-    # default locales in base image (https://github.com/docker-library/docs/tree/master/debian#locales)
-    LANG=C.UTF-8
-
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
