@@ -2,7 +2,7 @@
 
 [![dockeri.co](https://dockerico.blankenship.io/image/snowdreamtech/debian)](https://hub.docker.com/r/snowdreamtech/debian)
 
-Docker Image packaging for debian. (amd64, arm32v5, arm32v7, arm64v8, i386,mips64le, ppc64le, s390x)
+Docker Image packaging for debian. (amd64, arm32v5, arm32v7, arm64v8, i386,riscv64, ppc64le, s390x)
 
 # Usage
 
@@ -67,7 +67,7 @@ services:
 
 ```bash
 docker buildx create --use --name build --node build --driver-opt network=host
-docker buildx build -t snowdreamtech/debian --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x . --push
+docker buildx build -t snowdreamtech/debian --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x . --push
 ```
 
 ## Reference
