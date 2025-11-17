@@ -8,8 +8,8 @@ fi
 cd "${WORKDIR}"
 
 # exec commands
-if [ -n "$*" ]; then
-  gosu "${PUID}:${PGID}" ""$*""
+if [ $# -gt 0 ]; then
+  gosu "${PUID}:${PGID}" "$@"
 fi
 
 # keep the docker container running
