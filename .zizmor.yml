@@ -61,6 +61,7 @@ rules:
       - "scorecard.yml"
       - "stale.yml"
 
+  # ----------------------------------------------------------------------------
   # untrusted-input: Suppresses warnings for using dynamically evaluated data
   # ----------------------------------------------------------------------------
   # Checks for potentially malicious values like GitHub context variables
