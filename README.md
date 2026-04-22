@@ -144,43 +144,43 @@ debian/
 
 Each image includes essential tools for development and operations:
 
-**System Utilities**
+### System Utilities
 
 - lsb-release, procps, sudo, vim
 
-**Compression Tools**
+### Compression Tools
 
 - zip, unzip, bzip2, xz-utils, gzip
 
-**File & Data Tools**
+### File & Data Tools
 
 - file, jq
 
-**Time & Locale**
+### Time & Locale
 
 - tzdata
 
-**Security & Certificates**
+### Security & Certificates
 
 - openssl, gnupg, ca-certificates
 
-**Package Management**
+### Package Management
 
 - aptitude
 
-**System Monitoring**
+### System Monitoring
 
 - sysstat
 
-**Network Tools**
+### Network Tools
 
 - wget, curl, git, dnsutils, netcat-traditional, traceroute, iputils-ping, net-tools, lsof
 
-**Container Utilities**
+### Container Utilities
 
 - libcap2-bin, gosu
 
-**Transport**
+### Transport
 
 - apt-transport-https
 
