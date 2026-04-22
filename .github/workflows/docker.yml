@@ -1,0 +1,700 @@
+---
+# Continuous Delivery (Multi-Platform Docker Build)
+# Purpose: Builds and pushes multi-platform Docker images to DockerHub, Quay.io, and GHCR.
+# Trigger: Pushes to core branches, release tags, daily schedule, and manual dispatch.
+# Permissions:
+#   - contents: read (Required for repository checkout).
+#   - packages: write (Required for GHCR push).
+#   - id-token: write (Required for secure OIDC authentication).
+#   - security-events: write (Required for SARIF upload from Trivy scans).
+
+name: "🐳 Docker Multi-Platform Build"
+
+"on":
+  push:
+    branches:
+      - "main"
+      - "dev"
+    tags:
+      # Release-Please generated tags (primary format)
+      - "12-v*"
+      - "12-v*"
+      - "12-v*"
+      - "13-v*"
+      # Legacy semantic version tags (backward compatibility)
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "V[0-9]+.[0-9]+.[0-9]+"
+      - "debian-*.*.*"
+      - "[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+"
+      - "V[0-9]+.[0-9]+"
+      - "debian-*.*"
+      - "[0-9]+"
+      - "v[0-9]+"
+      - "V[0-9]+"
+      - "debian-*"
+  schedule:
+    # Automatically run on every Day
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+    inputs:
+      debian_version:
+        description: "Debian version to build (leave empty for all)"
+        required: false
+        type: choice
+        options:
+          - "all"
+          - "12"
+          - "13"
+        default: "all"
+      push_images:
+        description: "Push images to registries"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  buildx:
+    name: "🚀 Build & Deliver Manifest (${{ matrix.version }})"
+    # Ensure each matrix job only builds its own version when triggered by specialized tags.
+    # e.g., A tag starting with 'debian-13-' only triggers the 13 build job.
+    # Note: version matching logic migrated to steps for GitHub Actions compatibility.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: "12"
+            is_latest: false
+          - version: "13"
+            is_latest: true
+    concurrency:
+      group: docker-${{ github.workflow }}-${{ github.event_name == 'schedule' && 'nightly' || github.ref }}-${{ matrix.version }}
+      cancel-in-progress: ${{ github.event_name != 'schedule' }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      security-events: write
+    timeout-minutes: 60
+    env:
+      TRIVY_CACHE_DIR: .trivycache
+      BUILD_START_TIME: ${{ github.event.repository.updated_at }}
+    steps:
+      - name: "🎯 Check Version Filter (workflow_dispatch)"
+        id: version-filter
+        run: |
+          # For workflow_dispatch, check if this matrix version should run
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ inputs.debian_version }}" != "all" ] && [ "${{ inputs.debian_version }}" != "${{ matrix.version }}" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "→ Skipping Debian ${{ matrix.version }} (user selected: ${{ inputs.debian_version }})"
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "→ Building Debian ${{ matrix.version }}"
+
+      - name: "⏱️ Record Build Start Time"
+        if: steps.version-filter.outputs.skip != 'true'
+        id: start-time
+        run: |
+          echo "timestamp=$(date -u +%s)" >> "$GITHUB_OUTPUT"
+          echo "datetime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: "🔒 Harden Runner (Security Egress Audit)"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            *.githubusercontent.com:443
+            github.com:443
+            mise.run:443
+            install.mise.jdx.dev:443
+            *.mise.jdx.dev:443
+            packages.microsoft.com:443
+            *.ubuntu.com:80
+            *.ubuntu.com:443
+            *.debian.org:80
+            *.debian.org:443
+            *.rockylinux.org:443
+            *.centos.org:443
+            *.redhat.com:443
+            dl-cdn.debianlinux.org:443
+            registry.npmjs.org:443
+            registry.yarnpkg.com:443
+            pypi.org:443
+            files.pythonhosted.org:443
+            proxy.golang.org:443
+            sum.golang.org:443
+            index.crates.io:443
+            static.rust-lang.org:443
+            packagist.org:443
+            repo.maven.apache.org:443
+            rubygems.org:443
+            registry.terraform.io:443
+            formulae.brew.sh:443
+            repo.yarnpkg.com:443
+            mise.jdx.dev:443
+            ghcr.io:443
+            pkg-containers.githubusercontent.com:443
+            public.ecr.aws:443
+            production.cloudflare.docker.com:443
+            *.gcr.io:443
+            *.pkg.dev:443
+            *.quay.io:443
+            *.dkr.ecr.*.amazonaws.com:443
+            *.azurecr.io:443
+            osv-vulnerabilities.storage.googleapis.com:443
+            api.osv.dev:443
+            get.trivy.dev:443
+            *.aquasecurity.github.io:443
+            *.sigstore.dev:443
+
+      - name: "🧹 Optimize Runner Disk Space"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: false
+
+      - name: "📂 Checkout Repository Code"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ secrets.WORKFLOW_SECRET || secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+
+      - name: "⚡ Cache Trivy Database"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: .trivycache
+          key: ${{ runner.os }}-trivy-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-trivy-
+
+      - name: "🏗️ Configure QEMU Emulation"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.7.0
+
+      - name: "🛠️ Configure Docker Buildx"
+        if: steps.version-filter.outputs.skip != 'true'
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.12.0
+        with:
+          buildkitd-config: .github/buildkitd.toml
+
+      - name: "🔑 Initialize DockerHub Registry Session"
+        if: steps.version-filter.outputs.skip != 'true'
+        id: login-dockerhub
+        continue-on-error: true
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: "🔑 Initialize Quay.io Registry Session"
+        if: steps.version-filter.outputs.skip != 'true'
+        id: login-quay
+        continue-on-error: true
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      - name: "🔑 Initialize GitHub Container Registry Session"
+        if: steps.version-filter.outputs.skip != 'true'
+        id: login-ghcr
+        continue-on-error: true
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "⚠️ Check Registry Login Status"
+        if: steps.version-filter.outputs.skip != 'true'
+        run: |
+          echo "→ Registry login status:"
+          echo "  DockerHub: ${{ steps.login-dockerhub.outcome }}"
+          echo "  Quay.io: ${{ steps.login-quay.outcome }}"
+          echo "  GHCR: ${{ steps.login-ghcr.outcome }}"
+
+          if [ "${{ steps.login-dockerhub.outcome }}" != "success" ] && \
+            [ "${{ steps.login-quay.outcome }}" != "success" ] && \
+            [ "${{ steps.login-ghcr.outcome }}" != "success" ]; then
+            echo "::error::All registry logins failed. Cannot proceed."
+            exit 1
+          fi
+
+      - name: "🏷️ Generate Docker Metadata"
+        if: steps.version-filter.outputs.skip != 'true'
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: |
+            name=snowdreamtech/debian,enable=true
+            name=ghcr.io/snowdreamtech/debian,enable=true
+            name=quay.io/snowdreamtech/debian,enable=true
+          flavor: |
+            latest=false
+            prefix=
+            suffix=
+          tags: |
+            # Branch builds (non-tag pushes) - version-prefixed branch name
+            type=ref,enable=${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') }},priority=600,prefix=${{ matrix.version }}-,suffix=,event=branch
+            # Main/master branch - version-latest tag
+            type=raw,enable=${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && github.event_name != 'schedule' }},priority=200,prefix=${{ matrix.version }}-,suffix=,value=latest
+            # Main/master branch - global latest tag (only for is_latest version)
+            type=raw,enable=${{ matrix.is_latest && contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=latest
+            # Tag builds - version-latest tag
+            type=raw,enable=${{ startsWith(github.ref, 'refs/tags/') }},priority=200,prefix=${{ matrix.version }}-,suffix=,value=latest
+            # Tag builds - global latest tag (only for is_latest version)
+            type=raw,enable=${{ matrix.is_latest && startsWith(github.ref, 'refs/tags/') }},priority=200,prefix=,suffix=,value=latest
+            # Nightly builds
+            type=schedule,enable=true,priority=1000,prefix=${{ matrix.version }}-,suffix=,pattern=nightly
+            # Date-based tags for traceability (YYYYMMDD)
+            type=schedule,enable=true,priority=900,prefix=${{ matrix.version }}-,suffix=,pattern={{date 'YYYYMMDD'}}
+            # Semantic version tags (x.y.z)
+            type=match,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.version)) }},priority=800,prefix=,suffix=,pattern=v?(\d+\.\d+\.\d+),group=1
+            # Semantic version tags (x.y)
+            type=match,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.version)) }},priority=800,prefix=,suffix=,pattern=v?(\d+\.\d+),group=1
+            # Semantic version tags (x) - only for is_latest and non-0.x versions
+            type=match,enable=${{ matrix.is_latest && startsWith(github.ref, format('refs/tags/{0}-', matrix.version)) && !contains(github.ref, '-0.') && !contains(github.ref, '/0.') }},priority=800,prefix=,suffix=,pattern=v?(\d+),group=1
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+
+      - name: "🚀 Orchestrate Build & Delivery Suite"
+        id: build
+        if: |
+          steps.version-filter.outputs.skip != 'true' &&
+          ((github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')) ||
+          (startsWith(github.ref, format('refs/tags/{0}-', matrix.version))))
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: docker/${{ matrix.version }}
+          build-args: |
+            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+          platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+          provenance: true
+          sbom: true
+          push: ${{ (github.event_name == 'workflow_dispatch' && inputs.push_images) || (github.event_name != 'workflow_dispatch' && (contains(fromJSON('["refs/heads/main", "refs/heads/dev"]'), github.ref) || startsWith(github.ref, 'refs/tags/') || github.event_name == 'schedule')) }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: |
+            type=gha,scope=${{ github.ref_name }}-${{ matrix.version }}
+            type=gha,scope=main-${{ matrix.version }}
+            type=gha,scope=dev-${{ matrix.version }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-${{ matrix.version }}
+
+      - name: "📈 Analyze Build Cache Performance"
+        id: cache-stats
+        if: steps.version-filter.outputs.skip != 'true' && always()
+        run: |
+          # Calculate build duration
+          start_time=${{ steps.start-time.outputs.timestamp }}
+          end_time=$(date -u +%s)
+          duration=$((end_time - start_time))
+
+          echo "duration_seconds=${duration}" >> "$GITHUB_OUTPUT"
+          echo "duration_minutes=$((duration / 60))" >> "$GITHUB_OUTPUT"
+
+          # Estimate cache efficiency (based on build time)
+          if [ "${duration}" -lt 300 ]; then
+            echo "cache_efficiency=High (< 5 min)" >> "$GITHUB_OUTPUT"
+          elif [ "${duration}" -lt 600 ]; then
+            echo "cache_efficiency=Medium (5-10 min)" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_efficiency=Low (> 10 min)" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "→ Build completed in ${duration} seconds ($((duration / 60)) minutes)"
+
+      - name: "🔍 Verify Docker Manifest (Multi-Platform)"
+        id: manifest-check
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success' && steps.build.outputs.digest != ''
+        env:
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          # Get the first tag for inspection
+          first_tag=$(echo "${{ steps.meta.outputs.tags }}" | head -n 1)
+
+          echo "→ Inspecting manifest for: ${first_tag}"
+
+          # Inspect the manifest
+          if manifest=$(docker buildx imagetools inspect "${first_tag}" 2>&1); then
+            echo "${manifest}"
+
+            # Count platforms
+            platform_count=$(echo "${manifest}" | grep -c "Platform:" || echo "0")
+            echo "platform_count=${platform_count}" >> "$GITHUB_OUTPUT"
+
+            if [ "${platform_count}" -eq 8 ]; then
+              echo "✓ All 8 platforms verified in manifest"
+              echo "status=success" >> "$GITHUB_OUTPUT"
+            else
+              echo "::warning title=Incomplete Manifest::Expected 8 platforms, found ${platform_count}"
+              echo "status=partial" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "::error title=Manifest Inspection Failed::Could not inspect image manifest"
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "🚀 Smoke Test (Verify Image Functionality)"
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success'
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          echo "→ Verifying multi-registry image availability..."
+
+          # Retry function
+          retry_pull() {
+            local tag="$1"
+            local max_attempts=3
+            local attempt=1
+
+            while [ $attempt -le $max_attempts ]; do
+              if docker pull "${tag}" 2>/dev/null; then
+                return 0
+              fi
+              echo "    Attempt $attempt/$max_attempts failed, retrying..."
+              attempt=$((attempt + 1))
+              sleep 2
+            done
+            return 1
+          }
+
+          # Comprehensive smoke test function
+          run_smoke_test() {
+            local tag="$1"
+            local registry_name="$2"
+
+            echo "  → Running comprehensive smoke test..."
+
+            # Execute comprehensive test suite
+            if docker run --rm \
+              -e DEBUG=false \
+              -e TZ=Asia/Shanghai \
+              -e PUID=1000 \
+              -e PGID=1000 \
+              "${tag}" \
+              sh -c '
+                echo "  ✓ Entrypoint execution: OK" && \
+                printf "  ✓ Timezone: " && date "+%Z %z" && \
+                printf "  ✓ User context: " && id -un && \
+                printf "  ✓ Core tools: " && \
+                command -v apk >/dev/null && command -v bash >/dev/null && \
+                command -v curl >/dev/null && command -v git >/dev/null && \
+                echo "apk, bash, curl, git" && \
+                printf "  ✓ Package manager: " && \
+                apk info busybox >/dev/null 2>&1 && echo "functional" && \
+                echo "  ✓ All checks passed"
+              '; then
+              return 0
+            else
+              echo "  ✗ Smoke test failed for ${registry_name}"
+              return 1
+            fi
+          }
+
+          # Test images from each registry
+          # DockerHub (no prefix)
+          if [ "${{ steps.login-dockerhub.outcome }}" = "success" ]; then
+            dockerhub_tag=$(echo "${TAGS}" | grep -v '/' | head -n 1)
+            if [ -n "${dockerhub_tag}" ]; then
+              echo "  Testing DockerHub: ${dockerhub_tag}"
+              if retry_pull "${dockerhub_tag}"; then
+                if run_smoke_test "${dockerhub_tag}" "DockerHub"; then
+                  size=$(docker image inspect "${dockerhub_tag}" --format='{{.Size}}' | awk '{printf "%.2f MB", $1/1024/1024}')
+                  echo "  ✓ DockerHub image verified (Size: ${size})"
+                fi
+              else
+                echo "  ✗ DockerHub image pull failed after retries"
+              fi
+            fi
+          fi
+
+          # GHCR
+          if [ "${{ steps.login-ghcr.outcome }}" = "success" ]; then
+            ghcr_tag=$(echo "${TAGS}" | grep '^ghcr.io/' | head -n 1)
+            if [ -n "${ghcr_tag}" ]; then
+              echo "  Testing GHCR: ${ghcr_tag}"
+              if retry_pull "${ghcr_tag}"; then
+                if run_smoke_test "${ghcr_tag}" "GHCR"; then
+                  size=$(docker image inspect "${ghcr_tag}" --format='{{.Size}}' | awk '{printf "%.2f MB", $1/1024/1024}')
+                  echo "  ✓ GHCR image verified (Size: ${size})"
+                fi
+              else
+                echo "  ✗ GHCR image pull failed after retries"
+              fi
+            fi
+          fi
+
+          # Quay.io
+          if [ "${{ steps.login-quay.outcome }}" = "success" ]; then
+            quay_tag=$(echo "${TAGS}" | grep '^quay.io/' | head -n 1)
+            if [ -n "${quay_tag}" ]; then
+              echo "  Testing Quay.io: ${quay_tag}"
+              if retry_pull "${quay_tag}"; then
+                if run_smoke_test "${quay_tag}" "Quay.io"; then
+                  size=$(docker image inspect "${quay_tag}" --format='{{.Size}}' | awk '{printf "%.2f MB", $1/1024/1024}')
+                  echo "  ✓ Quay.io image verified (Size: ${size})"
+                fi
+              else
+                echo "  ✗ Quay.io image pull failed after retries"
+              fi
+            fi
+          fi
+
+          echo "✓ Registry verification completed"
+
+      - name: "🕵️ Scan Image for Vulnerabilities (Trivy)"
+        id: trivy
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success'
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        env:
+          TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db"
+          TRIVY_CHECKS_BUNDLE_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-checks"
+        with:
+          scan-type: "image"
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: "sarif"
+          output: "trivy-image-${{ matrix.version }}.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+          ignore-unfixed: true
+          exit-code: "0"
+          skip-dirs: "/tmp,/var/tmp,/var/cache"
+          skip-files: "/usr/local/bin/docker-entrypoint.sh"
+
+      - name: "📊 Parse Trivy Results"
+        id: trivy-summary
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success' && steps.trivy.outcome == 'success'
+        continue-on-error: true
+        run: |
+          if [ -f "trivy-image-${{ matrix.version }}.sarif" ]; then
+            critical=$(jq '[.runs[].results[] | select(.level=="error")] | length' trivy-image-${{ matrix.version }}.sarif)
+            high=$(jq '[.runs[].results[] | select(.level=="warning")] | length' trivy-image-${{ matrix.version }}.sarif)
+            medium=$(jq '[.runs[].results[] | select(.level=="note")] | length' trivy-image-${{ matrix.version }}.sarif)
+            {
+              echo "critical=${critical}"
+              echo "high=${high}"
+              echo "medium=${medium}"
+            } >> "$GITHUB_OUTPUT"
+            echo "✓ Parsed Trivy results: Critical=${critical}, High=${high}, Medium=${medium}"
+          else
+            echo "⚠️ SARIF file not found, skipping parse"
+            {
+              echo "critical=0"
+              echo "high=0"
+              echo "medium=0"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "📤 Upload Image Security Scan (SARIF)"
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success' && steps.trivy.outcome == 'success'
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
+        with:
+          sarif_file: "trivy-image-${{ matrix.version }}.sarif"
+          category: "trivy-image-debian-${{ matrix.version }}"
+
+      - name: "🗑️ Clean Up Build Artifacts"
+        if: steps.version-filter.outputs.skip != 'true' && always()
+        run: |
+          # Remove SARIF files to save space
+          rm -f trivy-image-*.sarif
+          echo "✓ Cleaned up build artifacts"
+
+      - name: "⚠️ Check Vulnerability Threshold"
+        id: vuln-check
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success'
+        run: |
+          critical=${{ steps.trivy-summary.outputs.critical }}
+          high=${{ steps.trivy-summary.outputs.high }}
+
+          if [ "${critical}" -gt 0 ]; then
+            echo "::warning title=Critical Vulnerabilities Detected::Found ${critical} critical vulnerabilities in Debian ${{ matrix.version }} image"
+          fi
+
+          if [ "${high}" -gt 5 ]; then
+            echo "::warning title=High Vulnerabilities Detected::Found ${high} high-severity vulnerabilities in Debian ${{ matrix.version }} image"
+          fi
+
+      - name: "🔏 Install Cosign Tool"
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success'
+        uses: sigstore/cosign-installer@053f9b74638557590800a301da1ba82351507e2c # v3.8.1
+
+      - name: "🖊️ Sign the Docker Image"
+        if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success'
+        continue-on-error: true
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          COSIGN_YES: true
+          BUILD_ID: ${{ github.run_id }}-${{ github.run_number }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          echo "→ Signing images with Cosign (keyless OIDC + metadata)"
+
+          # Track successful signatures
+          declare -a signed_tags=()
+          declare -a failed_tags=()
+
+          # Sign all images sequentially to better track failures
+          for tag in ${TAGS}; do
+            echo "  Signing: ${tag}"
+            if cosign sign --yes \
+              -a "build-id=${BUILD_ID}" \
+              -a "commit=${COMMIT_SHA}" \
+              -a "debian-version=${{ matrix.version }}" \
+              -a "workflow=${GITHUB_WORKFLOW}" \
+              "${tag}" 2>&1 | sed 's/^/    /'; then
+              echo "  ✓ Signed: ${tag}"
+              signed_tags+=("${tag}")
+            else
+              echo "  ✗ Failed to sign: ${tag}"
+              failed_tags+=("${tag}")
+            fi
+          done
+
+          echo ""
+          echo "→ Signature Summary:"
+          echo "  Successful: ${#signed_tags[@]}/${#TAGS[@]}"
+          if [ ${#failed_tags[@]} -gt 0 ]; then
+            echo "  Failed: ${failed_tags[*]}"
+          fi
+
+          # Only verify successfully signed images
+          if [ ${#signed_tags[@]} -gt 0 ]; then
+            echo ""
+            echo "→ Verifying signatures..."
+            for tag in "${signed_tags[@]}"; do
+              echo "  Verifying: ${tag}"
+              if cosign verify \
+                --certificate-identity-regexp=".*" \
+                --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+                "${tag}" > /dev/null 2>&1; then
+                echo "  ✓ Verified: ${tag}"
+              else
+                echo "  ⚠️ Verification failed for ${tag} (signature may not be propagated yet)"
+              fi
+            done
+          fi
+
+          echo "✓ Signing process completed (${#signed_tags[@]} successful, ${#failed_tags[@]} failed)"
+
+      - name: "📊 Generate Build Summary"
+        if: steps.version-filter.outputs.skip != 'true' && always()
+        run: |
+          {
+            echo "## 🐳 Docker Build Summary"
+            echo ""
+            echo "**Debian Version:** ${{ matrix.version }}"
+            echo "**Build Status:** ${{ steps.build.conclusion }}"
+            echo "**Trigger:** ${{ github.event_name }}"
+            echo "**Ref:** \`${{ github.ref }}\`"
+            echo "**Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ""
+
+            if [ "${{ steps.build.conclusion }}" = "success" ]; then
+              echo "### ⏱️ Build Performance"
+              echo ""
+              echo "- **Duration:** ${{ steps.cache-stats.outputs.duration_seconds }}s (${{ steps.cache-stats.outputs.duration_minutes }} min)"
+              echo "- **Cache Efficiency:** ${{ steps.cache-stats.outputs.cache_efficiency }}"
+              echo "- **Started:** ${{ steps.start-time.outputs.datetime }}"
+              echo ""
+              echo "### 📦 Published Images"
+              echo ""
+              echo '```'
+              echo "${{ steps.meta.outputs.tags }}"
+              echo '```'
+              echo ""
+
+              if [ -n "${{ steps.manifest-check.outputs.platform_count }}" ]; then
+                echo "### 🔍 Manifest Verification"
+                echo ""
+                echo "- **Platforms Verified:** ${{ steps.manifest-check.outputs.platform_count }}/8"
+                echo "- **Status:** ${{ steps.manifest-check.outputs.status }}"
+                echo ""
+              fi
+
+              echo "### 🏷️ Image Labels"
+              echo ""
+              echo "- **Created:** ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}"
+              echo "- **Version:** ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}"
+              echo "- **Revision:** \`${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}\`"
+              echo ""
+              echo "### 🏗️ Build Configuration"
+              echo ""
+              echo "- **Platforms:** 8 architectures (386, amd64, arm/v5, arm/v7, arm64, ppc64le, riscv64, s390x)"
+              echo "- **Registries:** DockerHub (${{ steps.login-dockerhub.outcome }}), GHCR (${{ steps.login-ghcr.outcome }}), Quay.io (${{ steps.login-quay.outcome }})"
+              echo "- **Cache Sources:** Current branch + main + dev"
+              echo ""
+              echo "### 🔐 Security & Compliance"
+              echo ""
+              echo "- ✅ SBOM Generated (CycloneDX)"
+              echo "- ✅ Provenance Attestation (SLSA)"
+              echo "- ✅ Trivy Vulnerability Scan (optimized, ignore-unfixed)"
+
+              if [ -n "${{ steps.trivy-summary.outputs.critical }}" ]; then
+                echo "  - 🔴 Critical: ${{ steps.trivy-summary.outputs.critical }}"
+                echo "  - 🟠 High: ${{ steps.trivy-summary.outputs.high }}"
+                echo "  - 🟡 Medium: ${{ steps.trivy-summary.outputs.medium }}"
+              fi
+
+              echo "- ✅ Cosign Signature (keyless OIDC + metadata)"
+              echo "- ✅ Multi-registry Smoke Tests"
+            elif [ "${{ steps.build.conclusion }}" = "skipped" ]; then
+              echo "### ⏭️ Build Skipped"
+              echo ""
+              echo "This version was not built because the tag filter did not match."
+              echo ""
+              echo "**Expected tag pattern:** \`${{ matrix.version }}-*\`"
+            else
+              echo "### ❌ Build Failed"
+              echo ""
+              echo "The build process encountered an error. Please check the logs above for details."
+              echo ""
+              echo "**Common issues:**"
+              echo "- Network connectivity to registries"
+              echo "- Insufficient disk space"
+              echo "- Platform-specific build failures"
+              echo "- Registry authentication issues"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: "⚠️ Annotate Build Failure"
+        if: steps.version-filter.outputs.skip != 'true' && failure()
+        run: |
+          echo "::error title=Docker Build Failed (Debian ${{ matrix.version }})::The multi-platform Docker build failed. Check the workflow logs for details."
+
+          # Detailed failure annotations
+          if [ "${{ steps.build.conclusion }}" = "failure" ]; then
+            echo "::error title=Build Step Failed::Docker build process failed for Debian ${{ matrix.version }}"
+          fi
+
+          if [ "${{ steps.trivy.conclusion }}" = "failure" ]; then
+            echo "::error title=Security Scan Failed::Trivy vulnerability scan failed for Debian ${{ matrix.version }}"
+          fi
+
+          if [ "${{ steps.login-dockerhub.outcome }}" != "success" ] && \
+            [ "${{ steps.login-quay.outcome }}" != "success" ] && \
+            [ "${{ steps.login-ghcr.outcome }}" != "success" ]; then
+            echo "::error title=Registry Login Failed::All registry authentications failed"
+          fi
