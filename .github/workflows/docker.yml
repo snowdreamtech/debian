@@ -108,7 +108,7 @@ jobs:
 
       - name: "🔒 Harden Runner (Security Egress Audit)"
         if: steps.version-filter.outputs.skip != 'true'
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -178,7 +178,7 @@ jobs:
 
       - name: "⚡ Cache Trivy Database"
         if: steps.version-filter.outputs.skip != 'true'
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .trivycache
           key: ${{ runner.os }}-trivy-${{ github.run_id }}
@@ -510,7 +510,7 @@ jobs:
       - name: "📤 Upload Image Security Scan (SARIF)"
         if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success' && steps.trivy.outcome == 'success'
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           sarif_file: "trivy-image-${{ matrix.version }}.sarif"
           category: "trivy-image-debian-${{ matrix.version }}"
