@@ -141,4 +141,4 @@ MIT License - see [LICENSE](../LICENSE) for details.
 
 ## Maintainer
 
-Snowdream Tech - https://github.com/snowdreamtech
+Snowdream Tech - <https://github.com/snowdreamtech>
