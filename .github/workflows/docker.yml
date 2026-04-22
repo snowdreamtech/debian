@@ -187,7 +187,7 @@ jobs:
 
       - name: "🏗️ Configure QEMU Emulation"
         if: steps.version-filter.outputs.skip != 'true'
-        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.7.0
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v3.7.0
 
       - name: "🛠️ Configure Docker Buildx"
         if: steps.version-filter.outputs.skip != 'true'
