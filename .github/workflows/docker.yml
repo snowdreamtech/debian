@@ -199,7 +199,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-dockerhub
         continue-on-error: true
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -208,7 +208,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-quay
         continue-on-error: true
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
@@ -218,7 +218,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-ghcr
         continue-on-error: true
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.7.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
