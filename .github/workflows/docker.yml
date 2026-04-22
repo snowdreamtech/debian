@@ -126,7 +126,7 @@ jobs:
             *.rockylinux.org:443
             *.centos.org:443
             *.redhat.com:443
-            dl-cdn.debianlinux.org:443
+            dl-cdn.alpinelinux.org:443
             registry.npmjs.org:443
             registry.yarnpkg.com:443
             pypi.org:443
