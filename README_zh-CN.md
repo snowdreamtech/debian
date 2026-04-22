@@ -1,229 +1,246 @@
-# Snowdream Tech AI IDE 模板
+# Debian Docker 镜像
 
-[![CI 流水线](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/ci.yml?branch=main&label=CI%20Pipeline)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![CD 自动化发布](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/cd.yml?branch=main&label=CD%20Pipeline)](https://github.com/snowdreamtech/template/actions/workflows/cd.yml)
-[![文档站点](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/pages.yml?branch=main&label=%E6%96%87%E6%A1%A3&logo=github)](https://github.com/snowdreamtech/template/actions/workflows/pages.yml)
-[![CodeQL 审计](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/snowdreamtech/template/actions/workflows/codeql.yml)
-[![跨平台验证](https://img.shields.io/badge/Verified-Linux%20%7C%20macOS%20%7C%20Windows-blue)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![安全审计](https://img.shields.io/badge/Security-Zizmor%20%7C%20Trivy%20%7C%20Gitleaks-brightgreen)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![SBOM 背书](https://img.shields.io/badge/SBOM-Available-success)](https://github.com/snowdreamtech/template/releases/latest)
-[![许可证: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/license/MIT)
-[![最新发布](https://img.shields.io/github/v/release/snowdreamtech/template?logo=github&sort=semver)](https://github.com/snowdreamtech/template/releases/latest)
-[![Dependabot 已启用](https://img.shields.io/badge/Dependabot-Enabled-brightgreen?logo=dependabot)](https://github.com/snowdreamtech/template/blob/main/.github/dependabot.yml)
-[![pre-commit 已启用](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-[![GitHub Stars](https://img.shields.io/github/stars/snowdreamtech/template?style=social)](https://github.com/snowdreamtech/template)
-[![GitHub Issues](https://img.shields.io/github/issues/snowdreamtech/template)](https://github.com/snowdreamtech/template/issues)
-[![代码规模](https://img.shields.io/github/languages/code-size/snowdreamtech/template)](https://github.com/snowdreamtech/template)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/debian/ci.yml?branch=main&label=CI%20Pipeline)](https://github.com/snowdreamtech/debian/actions/workflows/ci.yml)
+[![CD Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/debian/cd.yml?branch=main&label=CD%20Pipeline)](https://github.com/snowdreamtech/debian/actions/workflows/cd.yml)
+[![Docker Hub](https://img.shields.io/docker/pulls/snowdreamtech/debian?logo=docker)](https://hub.docker.com/r/snowdreamtech/debian)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-snowdreamtech%2Fdebian-blue?logo=github)](https://github.com/snowdreamtech/debian/pkgs/container/debian)
+[![Multi-Architecture](https://img.shields.io/badge/Architectures-8-blue)](https://github.com/snowdreamtech/debian)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/license/MIT)
+[![Release](https://img.shields.io/github/v/release/snowdreamtech/debian?logo=github&sort=semver)](https://github.com/snowdreamtech/debian/releases/latest)
 
 [English](README.md) | [简体中文](README_zh-CN.md)
 
-一个企业级、为多 AI IDE 协作而设计的基石模板。本项目作为 AI Agent 规则、工作流和项目配置的**单一事实来源 (Single Source of Truth)**，支持超过 50 种不同的 AI 辅助 IDE，并提供海量的多语言支持。
+企业级 Debian Docker 基础镜像，支持全面的多架构和生产就绪配置。
 
 ## 🌟 特性
 
-- **多 IDE 兼容性**：开箱即用支持 Cursor、Windsurf、GitHub Copilot、Cline、Roo Code、Trae、Gemini、Claude Code 等 50 多种 AI 编辑器。
-- **统一规则系统**：在 `.agent/rules/` 中维护中心化规则定义。在此修改规则通过安全的软链接/重定向模式自动传播到所有支持的 IDE。
-- **80+ 语言与框架规则**：预配置的高质量规则，涵盖从 Rust、Go、TypeScript、Python 到 Ansible、Kubernetes 和 API 设计等各个领域。
-- **智能工作流 (SpecKit)**：标准化的 `.agent/workflows/`（命令），如 `speckit.plan`、`speckit.analyze` 和 `snowdreamtech.init`，在所有支持的环境中保持一致。
-- **三重保证质量**：通过 Pre-commit 和 GitHub Actions 集成门禁检查，确保 100% 的代码纯净。
-- **跨平台就绪**：在 macOS (Homebrew/MacPorts)、Linux 和 Windows 上无缝运行。
+- **多架构支持**：原生支持 8 种架构（amd64、arm64、arm/v7、arm/v5、i386、ppc64le、s390x、riscv64）
+- **多个 Debian 版本**：Debian 12（Bookworm）和 Debian 13（Trixie）
+- **最小化基础镜像**：基于官方 slim 变体构建，镜像体积更小
+- **生产就绪**：预配置了必要工具和安全加固
+- **灵活的用户管理**：支持自定义 PUID/PGID
+- **模块化入口点系统**：可扩展的初始化脚本
+- **自动化构建**：CI/CD 流水线，自动测试和发布
 
-## 🏗️ 第 1 节 — 设计与架构
+## 📦 支持的版本
 
-### 概览 (Overview)
+| 版本 | 代号 | 基础镜像 | Docker 标签 | 状态 |
+|------|------|----------|-------------|------|
+| 13 | Trixie | debian:13.4-slim | `latest`, `13-latest`, `13-v13.4.0` | ✅ 活跃 |
+| 12 | Bookworm | debian:12.13-slim | `12-latest`, `12-v12.13.0` | ✅ 活跃 |
 
-Snowdream Tech 模板是一个基础脚手架，专为解决“多重 AI IDE 协作产生的配置碎片化”问题而设计。它在各种平台和语言中标准化了开发环境、AI Agent 规则以及自动化流水线。
+## 🚀 快速开始
 
-**核心能力 (Key Capabilities):**
+### 从 Docker Hub 拉取
 
-- 提供**统一的规则引擎**，跨 50+ 种 IDE 一致地约束 AI 行为。
-- 通过动态适配的 POSIX Shell 自动化脚本，强制保证**跨平台便携性**。
-- 实施**三重保证质量门禁**（IDE、CLI、CI），严防代码劣化。
-- 支持**大规模多语言技术栈**，并配备模块化的加载逻辑。
+```bash
+# 最新版本（Debian 13）
+docker pull snowdreamtech/debian:latest
 
-### 架构 (Architecture)
+# Debian 13（Trixie）
+docker pull snowdreamtech/debian:13-latest
+docker pull snowdreamtech/debian:13-v13.4.0
 
-```mermaid
-graph TD
-    A["开发者与智能体 (Agents)"] -->|操作| IDE["Cursor / Windsurf / Copilot / 50+ 其它"]
-    IDE -->|通过重定向读取规则| R1[".vscode/"]
-    IDE -->|通过重定向读取规则| R2[".github/"]
-    IDE -->|通过重定向读取规则| R3[".cline/ .trae/ 等等"]
-
-    R1 -.->|SSoT 指针| CoreRules[".agent/rules/"]
-    R2 -.->|SSoT 指针| CoreRules
-    R3 -.->|SSoT 指针| CoreRules
-
-    CoreRules -->|管理与约束| Src["项目应用源码"]
-    CoreRules -->|管理与约束| Scripts["CI/CD 与统一自动化脚本"]
+# Debian 12（Bookworm）
+docker pull snowdreamtech/debian:12-latest
+docker pull snowdreamtech/debian:12-v12.13.0
 ```
 
-### 设计原则
+### 从 GitHub Container Registry 拉取
 
-- **唯一事实来源 (SSoT)**: 所有 AI 行为准则、开发脚手架命令和 Git 生态钩子均集中在一处维护，彻底消灭各 IDE 之间的配置孤岛与冗余。
-- **跨平台多态性 (Cross-Platform)**: 核心自动化流水线基于原生 POSIX Shell 编写，且强制为 Windows (PowerShell / Batch) 提供对等兼容的轻量级包装层。
-- **三重质量护城河 (Triple Guarantee)**: 由 IDE 实时自动修复、Pre-commit 本地强制阻断、以及 CI/CD (GitHub Actions) 远端全量审计，三层联防共同构建 100% 代码纯净度防线。
+```bash
+# 最新版本（Debian 13）
+docker pull ghcr.io/snowdreamtech/debian:latest
 
-### 职责分工
+# Debian 13（Trixie）
+docker pull ghcr.io/snowdreamtech/debian:13-latest
+docker pull ghcr.io/snowdreamtech/debian:13-v13.4.0
 
-- **.agent/rules/**: 拥有跨所有支持语言的 AI Agent 权威行为逻辑。
-- **scripts/**: 拥有跨平台自动化和生命周期逻辑。
-- **.agent/workflows/**: 拥有交互式 AI 命令 (SpecKit)。
+# Debian 12（Bookworm）
+docker pull ghcr.io/snowdreamtech/debian:12-latest
+docker pull ghcr.io/snowdreamtech/debian:12-v12.13.0
+```
 
----
+### 基本用法
 
-## 📖 第 2 节 — 使用指南
+```bash
+# 运行交互式 shell
+docker run -it snowdreamtech/debian:latest
 
-### 前置条件
+# 使用自定义用户运行
+docker run -it \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e USER=myuser \
+  snowdreamtech/debian:latest
 
-- **运行时**: Node.js (>= 20.x), Python (>= 3.10.x)。
-- **Git**: 需要全局安装 git。
-- **Make**: 统一命令执行所必需。
+# 在后台保持容器运行
+docker run -d \
+  -e KEEPALIVE=1 \
+  --name my-debian \
+  snowdreamtech/debian:latest
 
-### 快速开始
+# 启用调试输出运行
+docker run -it \
+  -e DEBUG=true \
+  snowdreamtech/debian:latest
+```
 
-1. **前提条件**：推荐安装 [mise](https://mise.jdx.dev/) 以实现全局工具管理（脚本会在 setup 阶段自动引导安装）。
-2. **初始化**：`make setup`（引导安装 mise 及核心工具）。
-3. **安装**：`make install`（同步项目依赖）。
-4. **验证**：`make verify`（确保环境健康）。
+## 🏗️ 架构
 
-### 配置参考
+### 支持的平台
 
-| 参数           | 用途                                       | 位置                    |
-| :------------- | :----------------------------------------- | :---------------------- |
-| `PROJECT_NAME` | 项目身份                                   | `init-project.sh`       |
-| `GITHUB_PROXY` | 网络优化 (见 [代理使用场](#-代理使用场景)) | `scripts/lib/common.sh` |
-| `VERSION`      | 语义化版本                                 | `package.json`          |
+| 架构 | 状态 | 说明 |
+|------|------|------|
+| linux/amd64 | ✅ 支持 | x86-64 |
+| linux/arm64 | ✅ 支持 | ARM 64 位 |
+| linux/arm/v7 | ✅ 支持 | ARM 32 位 v7 |
+| linux/arm/v5 | ✅ 支持 | ARM 32 位 v5 |
+| linux/386 | ✅ 支持 | x86 32 位 |
+| linux/ppc64le | ✅ 支持 | PowerPC 64 位 LE |
+| linux/s390x | ✅ 支持 | IBM System z |
+| linux/riscv64 | ✅ 支持 | RISC-V 64 位 |
 
 ### 目录结构
 
 ```text
-project-root/
-├── .agent/              # 🤖 权威 AI 配置 (大脑)
-│   ├── rules/           # 📏 统一 AI 行为规则 (80+ 套件, SSoT)
-│   └── workflows/       # 🛠️ 统一命令与 AI 工作流 (SpecKit)
-├── .agents/             # 🧩 共享命令源 (自动管理的软链接)
-├── .github/             # 🐙 GitHub 集成与 Copilot 设置
-├── .vscode/             # 💻 优化的 VS Code 配置
-└── src/                 # 📦 您的实际应用源代码
+debian/
+├── docker/                      # Docker 配置
+│   ├── 12/                      # Debian 12（Bookworm）
+│   │   ├── Dockerfile           # 多阶段 Dockerfile
+│   │   ├── docker-entrypoint.sh # 容器入口点
+│   │   ├── vimrc.local          # Vim 配置
+│   │   └── entrypoint.d/        # 模块化入口点脚本
+│   ├── 13/                      # Debian 13（Trixie）
+│   │   ├── Dockerfile           # 多阶段 Dockerfile
+│   │   ├── docker-entrypoint.sh # 容器入口点
+│   │   ├── vimrc.local          # Vim 配置
+│   │   └── entrypoint.d/        # 模块化入口点脚本
+│   └── README.md                # Docker 文档
+├── .github/workflows/           # CI/CD 流水线
+│   ├── ci.yml                   # 持续集成
+│   └── cd.yml                   # 持续部署
+└── docs/                        # 项目文档
 ```
 
----
+## ⚙️ 配置
 
-## 🛠️ 第 3 节 — 运维指南
+### 环境变量
 
-### 部署前检查清单
+| 变量 | 默认值 | 描述 |
+|------|--------|------|
+| `DEBIAN_FRONTEND` | noninteractive | Debian 包管理器前端 |
+| `KEEPALIVE` | 0 | 保持容器运行（1=是，0=否）|
+| `CAP_NET_BIND_SERVICE` | 0 | 启用绑定到特权端口（<1024）|
+| `LANG` | C.UTF-8 | UTF-8 支持的区域设置 |
+| `UMASK` | 022 | 文件创建掩码 |
+| `DEBUG` | false | 在入口点脚本中启用调试输出 |
+| `PGID` | 0 | 自定义用户的组 ID |
+| `PUID` | 0 | 自定义用户的用户 ID |
+| `USER` | root | 用户名（如果不是 root 则创建用户）|
+| `WORKDIR` | /root | 工作目录 |
 
-1. 运行 `make verify` 确保所有质量门禁均为绿色。
-2. 运行 `make audit` 验证安全合规性。
-3. 确保 `CHANGELOG.md` 已更新。
+### 已安装的软件包
 
-### 性能考虑
+每个镜像都包含开发和运维的必要工具：
 
-- **Lint 速度**: Pre-commit 钩子通过仅扫描暂存文件，目标耗时 < 5s。
-- **CI 吞吐量**: GitHub Actions 使用矩阵构建在不同操作系统上并行测试。
+**系统工具**
+- lsb-release、procps、sudo、vim
 
-### 故障排除
+**压缩工具**
+- zip、unzip、bzip2、xz-utils、gzip
 
-- **问题**: `make install` 在 Windows 上失败。
-  - **诊断**: 检查 `ExecutionPolicy` 是否允许脚本执行。
-  - **解决方案**: 运行 `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`。
-- **问题**: Gitleaks 检测到误报。
-  - **诊断**: 检查 `.gitleaks.toml` 白名单。
-  - **解决方案**: 将特征码添加到 `.gitleaksignore`。
-- **问题**: `make install` 后，macOS 上的 Pre-commit 钩子出现 Python 报错。
-  - **诊断**: 检查 venv 是否存在：`ls .venv/bin/python`。
-  - **解决方案**: 重建 venv：`rm -rf .venv && make install`。
+**文件和数据工具**
+- file、jq
 
----
+**时间和区域设置**
+- tzdata
 
-## 🔒 第 4 节 — 安全注意事项
+**安全和证书**
+- openssl、gnupg、ca-certificates
 
-### 安全模型
+**包管理**
+- aptitude
 
-- **机密管理**: 所有机密必须通过环境变量注入或由 HashiCorp Vault 处理。严禁提交 `.env` 文件。
-- **审计日志**: 所有关键操作（提交、发布、状态变更）均通过 Git 和 CI 日志记录。
-- **供应链**: 所有 CI Action 均锁定到精确的版本/SHA。
+**系统监控**
+- sysstat
 
-### 最佳实践
+**网络工具**
+- wget、curl、git、dnsutils、netcat-traditional、traceroute、iputils-ping、net-tools、lsof
 
-| 维度   | 要求             | 实现                          |
-| :----- | :--------------- | :---------------------------- |
-| 机密   | 仓库中无明文机密 | 提交时强制执行 `gitleaks`     |
-| 完整性 | 验证下载内容     | `common.sh` 中的 SHA-256 校验 |
-| 权限   | 非 root 执行     | Dockerfile 最佳实践           |
+**容器工具**
+- libcap2-bin、gosu
 
----
+**传输**
+- apt-transport-https
 
-## 🧑‍💻 第 5 节 — 开发者指南
+## 🔧 本地构建
 
-### 代码组织 (Code Organization)
+### 前置要求
 
-```text
-project-root/
-├── .agent/               # AI 配置（单一事实来源）
-│   ├── rules/            # 88 个 AI Agent 行为规则文件
-│   └── workflows/        # SpecKit 斜杠命令定义
-├── .github/              # GitHub 生态（Actions、模板、Dependabot）
-│   └── workflows/        # CI/CD 流水线（lint、verify、release、security）
-├── .devcontainer/        # DevContainer 配置，保障可复现的开发环境
-├── docs/                 # 项目文档
-│   ├── adr/              # 架构决策记录
-│   ├── runbooks/         # 运维与恢复手册
-│   └── glossary.md       # 中英文对照术语表
-├── scripts/              # POSIX Shell 自动化脚本（setup、install、verify）
-│   └── lib/              # 共享 Shell 库函数
-└── Makefile              # 任务编排（setup、install、lint、verify、audit）
-```
+- Docker 20.10+ 或 Docker Desktop
+- Docker Buildx（用于多架构构建）
 
-**命名规范**：核心规则文件使用 `NN-短横线命名.md`，语言栈规则使用 `technology.md`，
-工作流文件使用 `namespace.verb.md`，Shell 脚本使用 `kebab-case.sh`。
-
-### 扩展点
-
-1. **添加规则**: 在 `.agent/rules/` 中创建新的 `.md` 文件，并在 `00-index.md` 中关联。
-2. **添加命令**: 将 `.md` 文件添加到 `.agent/workflows/`。
-3. **添加 IDE 支持**: 按照 Rule 03 中的软链接模式创建重定向文件夹（例如 `.myide/`）。
-
-### 本地开发设置
+### 构建命令
 
 ```bash
-git clone <repo>
-cd <repo>
-git config core.ignorecase false  # Mac/Windows 用户必须执行此设置
-make setup
-make install
+# 构建 Debian 12
+docker build -t debian:12-local docker/12/
+
+# 构建 Debian 13
+docker build -t debian:13-local docker/13/
+
+# 构建特定平台
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t debian:13-local \
+  docker/13/
+
+# 构建所有平台（需要 buildx）
+docker buildx build \
+  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v5,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
+  -t debian:13-multi \
+  docker/13/
 ```
 
-### 参考资料
+## 📚 文档
 
-- [完整文档](docs/index.md)
-- [项目术语表](docs/glossary.md)
-- [约定式提交](https://www.conventionalcommits.org/)
+- [Docker 配置指南](docker/README.md) - 详细的 docker 设置和使用
+- [贡献指南](CONTRIBUTING.md) - 如何为此项目做贡献
+- [更新日志](CHANGELOG.md) - 版本历史和发布说明
+- [安全策略](SECURITY.md) - 安全报告和策略
 
-### 🚀 代理使用场景
+## 🤝 贡献
 
-`GITHUB_PROXY` (默认: `https://gh-proxy.sn0wdr1am.com/`) 针对特定的网络加速场景进行了优化。在不支持的协议（如 Git）上误用它会导致错误。
+欢迎贡献！请阅读我们的[贡献指南](CONTRIBUTING.md)了解详情：
 
-| 场景                   | 是否支持      | 示例 / 说明                                    |
-| :--------------------- | :------------ | :--------------------------------------------- |
-| **Release 文件**       | ✅ 支持       | `.../releases/download/v1.0/tool.zip`          |
-| **源码归档 (Archive)** | ✅ 支持       | `.../archive/master.zip` 或 `.tar.gz`          |
-| **文件直接链接**       | ✅ 支持       | `.../blob/master/filename`                     |
-| **Git Clone**          | ❌ **不支持** | **请勿**用于 `git clone` 或 `insteadOf` 配置。 |
-| **项目文件夹**         | ❌ **不支持** | 不支持通过代理进行项目文件夹的浏览或克隆。     |
+- 行为准则
+- 开发工作流程
+- 提交消息约定
+- Pull Request 流程
 
-> [!IMPORTANT]
-> 为了防止破坏工具链（如 `mise` 或 `asdf`），本模板显式禁用了通过此代理进行的 Git 重定向。请仅在脚本中进行直接 HTTP 下载时使用它。
+## 🔒 安全
 
----
+安全是首要任务。如果您发现安全漏洞，请遵循我们的[安全策略](SECURITY.md)进行负责任的披露。
 
 ## 📄 许可证
 
-本项目采用 **MIT 许可证** 授权。
-版权所有 (c) 2026-现在 [SnowdreamTech Inc.](https://github.com/snowdreamtech)
-详见 [LICENSE](./LICENSE) 文件。
+本项目采用 **MIT 许可证**。
+版权所有 (c) 2026-present [SnowdreamTech Inc.](https://github.com/snowdreamtech)
+完整许可证文本请参见 [LICENSE](./LICENSE) 文件。
+
+## 🙏 致谢
+
+- 基于官方 [Debian Docker 镜像](https://hub.docker.com/_/debian)
+- 受 Docker 社区最佳实践启发
+- 使用 [GitHub Actions](https://github.com/features/actions) 构建
+
+## 📞 支持
+
+- 📧 邮箱：sn0wdr1am@qq.com
+- 🐛 问题：[GitHub Issues](https://github.com/snowdreamtech/debian/issues)
+- 💬 讨论：[GitHub Discussions](https://github.com/snowdreamtech/debian/discussions)
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/image?repos=snowdreamtech/template&type=date&legend=top-left)](https://www.star-history.com/?repos=snowdreamtech%2Ftemplate&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/image?repos=snowdreamtech/debian&type=date&legend=top-left)](https://www.star-history.com/?repos=snowdreamtech%2Fdebian&type=date&legend=top-left)
