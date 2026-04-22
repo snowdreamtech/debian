@@ -51,11 +51,11 @@ python = "3.14.4"
 
 # Python tools (pre-commit hooks)
 "github:astral-sh/ruff" = "0.15.11"
-"pipx:clang-format" = "22.1.3"
+"pipx:clang-format" = "22.1.4"
 
 # Shell & scripting linters (pre-commit hooks)
 "github:rhysd/actionlint" = "1.7.12"
-"pipx:pre-commit" = "4.5.1"
+"pipx:pre-commit" = "4.6.0"
 "github:koalaman/shellcheck" = "0.11.0"
 "github:mvdan/sh" = { version = "3.13.1", bin = "shfmt" }
 
