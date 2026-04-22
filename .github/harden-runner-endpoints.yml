@@ -139,5 +139,6 @@ workflow_profiles:
   pages.yml: standard
   ci.yml: full
   cd.yml: full
+  docker.yml: full
   nightly-audit.yml: audit
   scorecard.yml: audit
