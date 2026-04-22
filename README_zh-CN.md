@@ -145,33 +145,43 @@ debian/
 每个镜像都包含开发和运维的必要工具：
 
 **系统工具**
+
 - lsb-release、procps、sudo、vim
 
 **压缩工具**
+
 - zip、unzip、bzip2、xz-utils、gzip
 
 **文件和数据工具**
+
 - file、jq
 
 **时间和区域设置**
+
 - tzdata
 
 **安全和证书**
+
 - openssl、gnupg、ca-certificates
 
 **包管理**
+
 - aptitude
 
 **系统监控**
+
 - sysstat
 
 **网络工具**
+
 - wget、curl、git、dnsutils、netcat-traditional、traceroute、iputils-ping、net-tools、lsof
 
 **容器工具**
+
 - libcap2-bin、gosu
 
 **传输**
+
 - apt-transport-https
 
 ## 🔧 本地构建
@@ -237,7 +247,7 @@ docker buildx build \
 
 ## 📞 支持
 
-- 📧 邮箱：sn0wdr1am@qq.com
+- 📧 邮箱：<sn0wdr1am@qq.com>
 - 🐛 问题：[GitHub Issues](https://github.com/snowdreamtech/debian/issues)
 - 💬 讨论：[GitHub Discussions](https://github.com/snowdreamtech/debian/discussions)
 

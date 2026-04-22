@@ -145,33 +145,43 @@ debian/
 Each image includes essential tools for development and operations:
 
 **System Utilities**
+
 - lsb-release, procps, sudo, vim
 
 **Compression Tools**
+
 - zip, unzip, bzip2, xz-utils, gzip
 
 **File & Data Tools**
+
 - file, jq
 
 **Time & Locale**
+
 - tzdata
 
 **Security & Certificates**
+
 - openssl, gnupg, ca-certificates
 
 **Package Management**
+
 - aptitude
 
 **System Monitoring**
+
 - sysstat
 
 **Network Tools**
+
 - wget, curl, git, dnsutils, netcat-traditional, traceroute, iputils-ping, net-tools, lsof
 
 **Container Utilities**
+
 - libcap2-bin, gosu
 
 **Transport**
+
 - apt-transport-https
 
 ## 🔧 Building Locally
@@ -237,7 +247,7 @@ See the [LICENSE](./LICENSE) file for the full license text.
 
 ## 📞 Support
 
-- 📧 Email: sn0wdr1am@qq.com
+- 📧 Email: <sn0wdr1am@qq.com>
 - 🐛 Issues: [GitHub Issues](https://github.com/snowdreamtech/debian/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/snowdreamtech/debian/discussions)
 
