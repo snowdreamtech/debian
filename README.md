@@ -1,219 +1,227 @@
-# Snowdream Tech AI IDE Template
+# Docker Images for Debian
 
-[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/ci.yml?branch=main&label=CI%20Pipeline)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![CD Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/cd.yml?branch=main&label=CD%20Pipeline)](https://github.com/snowdreamtech/template/actions/workflows/cd.yml)
-[![GitHub Pages](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/pages.yml?branch=main&label=Docs&logo=github)](https://github.com/snowdreamtech/template/actions/workflows/pages.yml)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/snowdreamtech/template/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/snowdreamtech/template/actions/workflows/codeql.yml)
-[![Multi-OS Verified](https://img.shields.io/badge/Verified-Linux%20%7C%20macOS%20%7C%20Windows-blue)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![Security Audit](https://img.shields.io/badge/Security-Zizmor%20%7C%20Trivy%20%7C%20Gitleaks-brightgreen)](https://github.com/snowdreamtech/template/actions/workflows/ci.yml)
-[![SBOM Available](https://img.shields.io/badge/SBOM-Available-success)](https://github.com/snowdreamtech/template/releases/latest)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/debian/ci.yml?branch=main&label=CI%20Pipeline)](https://github.com/snowdreamtech/debian/actions/workflows/ci.yml)
+[![CD Pipeline](https://img.shields.io/github/actions/workflow/status/snowdreamtech/debian/cd.yml?branch=main&label=CD%20Pipeline)](https://github.com/snowdreamtech/debian/actions/workflows/cd.yml)
+[![Docker Hub](https://img.shields.io/docker/pulls/snowdreamtech/debian?logo=docker)](https://hub.docker.com/r/snowdreamtech/debian)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-snowdreamtech%2Fdebian-blue?logo=github)](https://github.com/snowdreamtech/debian/pkgs/container/debian)
+[![Multi-Architecture](https://img.shields.io/badge/Architectures-8-blue)](https://github.com/snowdreamtech/debian)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/license/MIT)
-[![Release](https://img.shields.io/github/v/release/snowdreamtech/template?logo=github&sort=semver)](https://github.com/snowdreamtech/template/releases/latest)
-[![Dependabot Enabled](https://img.shields.io/badge/Dependabot-Enabled-brightgreen?logo=dependabot)](https://github.com/snowdreamtech/template/blob/main/.github/dependabot.yml)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-[![GitHub Stars](https://img.shields.io/github/stars/snowdreamtech/template?style=social)](https://github.com/snowdreamtech/template)
-[![GitHub Issues](https://img.shields.io/github/issues/snowdreamtech/template)](https://github.com/snowdreamtech/template/issues)
-[![Code Size](https://img.shields.io/github/languages/code-size/snowdreamtech/template)](https://github.com/snowdreamtech/template)
+[![Release](https://img.shields.io/github/v/release/snowdreamtech/debian?logo=github&sort=semver)](https://github.com/snowdreamtech/debian/releases/latest)
 
 [English](README.md) | [简体中文](README_zh-CN.md)
 
-An enterprise-grade, foundational template designed for multi-AI IDE collaboration. This repository serves as a **Single Source of Truth** for AI agent rules, workflows, and project configurations, supporting over 50 different AI-assisted IDEs with massive multi-language support.
+Enterprise-grade Docker base images for Debian with comprehensive multi-architecture support and production-ready configurations.
 
 ## 🌟 Features
 
-- **Multi-IDE Compatibility**: Out-of-the-box support for Cursor, Windsurf, GitHub Copilot, Cline, Roo Code, Trae, Gemini, Claude Code, and 50+ other AI editors.
-- **Unified Rule System**: Centralized rule definitions in `.agent/rules/`. Changes propagate automatically to all supported IDEs via a secure symlink/redirect pattern.
-- **80+ Language & Framework Rules**: Pre-configured high-quality rules from Rust, Go, TypeScript, Python to Ansible, Kubernetes, and API design.
-- **Smart Workflows (SpecKit)**: Standardized `.agent/workflows/` commands (`speckit.plan`, `speckit.analyze`, `snowdreamtech.init`) that behave consistently across all supported environments.
-- **Triple Guarantee Quality**: 100% code purity enforced through Pre-commit and GitHub Actions integrated quality gates.
-- **Cross-Platform Ready**: Runs seamlessly on macOS (Homebrew/MacPorts), Linux, and Windows.
+- **Multi-Architecture Support**: Native support for 8 architectures (amd64, arm64, arm/v7, arm/v5, i386, ppc64le, s390x, riscv64)
+- **Multiple Debian Versions**: Debian 12 (Bookworm) and Debian 13 (Trixie)
+- **Minimal Base**: Built on official slim variants for smaller image sizes
+- **Production Ready**: Pre-configured with essential tools and security hardening
+- **Flexible User Management**: Support for custom PUID/PGID
+- **Modular Entrypoint System**: Extensible initialization scripts
+- **Automated Builds**: CI/CD pipeline with automated testing and publishing
 
-## 🏗️ Section 1 — Design & Architecture
+## 📦 Supported Versions
 
-### Overview
+| Version | Codename | Base Image | Docker Tags | Status |
+|---------|----------|------------|-------------|--------|
+| 13 | Trixie | debian:13.4-slim | `latest`, `13-latest`, `13-v13.4.0` | ✅ Active |
+| 12 | Bookworm | debian:12.13-slim | `12-latest`, `12-v12.13.0` | ✅ Active |
 
-The Snowdream Tech Template is a foundational scaffold engineered to solve the "N-IDE Fragmentation" problem. It standardizes the development environment, AI agent rules, and automation pipelines across varied platforms and languages.
+## 🚀 Quick Start
 
-**Key Capabilities:**
+### Pull from Docker Hub
 
-- Provides a **Unified Rule Engine** that governs AI behavior consistently across 50+ IDEs.
-- Enforces **Cross-Platform Portability** through dynamically adapting POSIX shell automation.
-- Implements a **Triple Guarantee Quality Gate** (IDE, CLI, CI) to prevent regressions.
-- Supports **Massive Multi-Language Stacks** with modular onboarding logic.
+```bash
+# Latest (Debian 13)
+docker pull snowdreamtech/debian:latest
 
-### Architecture
+# Debian 13 (Trixie)
+docker pull snowdreamtech/debian:13-latest
+docker pull snowdreamtech/debian:13-v13.4.0
 
-```mermaid
-graph TD
-    A["Developers & Agents"] -->|Operates via| IDE["Cursor / Windsurf / Copilot / 50+ Others"]
-    IDE -->|Reads Rules via Redirects| R1[".vscode/"]
-    IDE -->|Reads Rules via Redirects| R2[".github/"]
-    IDE -->|Reads Rules via Redirects| R3[".cline/ .trae/ etc."]
-
-    R1 -.->|SSoT Pointer| CoreRules[".agent/rules/"]
-    R2 -.->|SSoT Pointer| CoreRules
-    R3 -.->|SSoT Pointer| CoreRules
-
-    CoreRules -->|Governs| Src["Source Code"]
-    CoreRules -->|Governs| Scripts["CI/CD & Shell Scripts"]
+# Debian 12 (Bookworm)
+docker pull snowdreamtech/debian:12-latest
+docker pull snowdreamtech/debian:12-v12.13.0
 ```
 
-### Design Principles
+### Pull from GitHub Container Registry
 
-- **Single Source of Truth (SSoT)**: All AI rules, commands, and Git hooks live in one place. No duplicated IDE configurations.
-- **Cross-Platform Portability**: Heavy automation logic is written in POSIX Shell, with thin wrappers for Windows PowerShell/Batch.
-- **Triple Guarantee Quality**: Linting and formatting form an impenetrable wall, enforced at the IDE layer, pre-commit layer, and CI/CD GitHub Actions layer.
+```bash
+# Latest (Debian 13)
+docker pull ghcr.io/snowdreamtech/debian:latest
 
-### Responsibilities
+# Debian 13 (Trixie)
+docker pull ghcr.io/snowdreamtech/debian:13-latest
+docker pull ghcr.io/snowdreamtech/debian:13-v13.4.0
 
-- **.agent/rules/**: Owns the definitive behavioral logic for AI agents across all supported languages.
-- **scripts/**: Owns the cross-platform automation and lifecycle logic.
-- **.agent/workflows/**: Owns the interactive AI commands (SpecKit).
+# Debian 12 (Bookworm)
+docker pull ghcr.io/snowdreamtech/debian:12-latest
+docker pull ghcr.io/snowdreamtech/debian:12-v12.13.0
+```
 
----
+### Basic Usage
 
-## 📖 Section 2 — Usage Guide
+```bash
+# Run interactive shell
+docker run -it snowdreamtech/debian:latest
+
+# Run with custom user
+docker run -it \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e USER=myuser \
+  snowdreamtech/debian:latest
+
+# Keep container running in background
+docker run -d \
+  -e KEEPALIVE=1 \
+  --name my-debian \
+  snowdreamtech/debian:latest
+
+# Run with debug output
+docker run -it \
+  -e DEBUG=true \
+  snowdreamtech/debian:latest
+```
+
+## 🏗️ Architecture
+
+### Supported Platforms
+
+| Architecture | Status | Notes |
+|--------------|--------|-------|
+| linux/amd64 | ✅ Supported | x86-64 |
+| linux/arm64 | ✅ Supported | ARM 64-bit |
+| linux/arm/v7 | ✅ Supported | ARM 32-bit v7 |
+| linux/arm/v5 | ✅ Supported | ARM 32-bit v5 |
+| linux/386 | ✅ Supported | x86 32-bit |
+| linux/ppc64le | ✅ Supported | PowerPC 64-bit LE |
+| linux/s390x | ✅ Supported | IBM System z |
+| linux/riscv64 | ✅ Supported | RISC-V 64-bit |
+
+### Directory Structure
+
+```text
+debian/
+├── docker/                      # Docker configurations
+│   ├── 12/                      # Debian 12 (Bookworm)
+│   │   ├── Dockerfile           # Multi-stage Dockerfile
+│   │   ├── docker-entrypoint.sh # Container entrypoint
+│   │   ├── vimrc.local          # Vim configuration
+│   │   └── entrypoint.d/        # Modular entrypoint scripts
+│   ├── 13/                      # Debian 13 (Trixie)
+│   │   ├── Dockerfile           # Multi-stage Dockerfile
+│   │   ├── docker-entrypoint.sh # Container entrypoint
+│   │   ├── vimrc.local          # Vim configuration
+│   │   └── entrypoint.d/        # Modular entrypoint scripts
+│   └── README.md                # Docker documentation
+├── .github/workflows/           # CI/CD pipelines
+│   ├── ci.yml                   # Continuous Integration
+│   └── cd.yml                   # Continuous Deployment
+└── docs/                        # Project documentation
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DEBIAN_FRONTEND` | noninteractive | Debian package manager frontend |
+| `KEEPALIVE` | 0 | Keep container running (1=yes, 0=no) |
+| `CAP_NET_BIND_SERVICE` | 0 | Enable binding to privileged ports (<1024) |
+| `LANG` | C.UTF-8 | Locale setting for UTF-8 support |
+| `UMASK` | 022 | File creation mask |
+| `DEBUG` | false | Enable debug output in entrypoint scripts |
+| `PGID` | 0 | Group ID for custom user |
+| `PUID` | 0 | User ID for custom user |
+| `USER` | root | Username (creates user if not root) |
+| `WORKDIR` | /root | Working directory |
+
+### Installed Packages
+
+Each image includes essential tools for development and operations:
+
+**System Utilities**
+- lsb-release, procps, sudo, vim
+
+**Compression Tools**
+- zip, unzip, bzip2, xz-utils, gzip
+
+**File & Data Tools**
+- file, jq
+
+**Time & Locale**
+- tzdata
+
+**Security & Certificates**
+- openssl, gnupg, ca-certificates
+
+**Package Management**
+- aptitude
+
+**System Monitoring**
+- sysstat
+
+**Network Tools**
+- wget, curl, git, dnsutils, netcat-traditional, traceroute, iputils-ping, net-tools, lsof
+
+**Container Utilities**
+- libcap2-bin, gosu
+
+**Transport**
+- apt-transport-https
+
+## 🔧 Building Locally
 
 ### Prerequisites
 
-- **Runtime**: Node.js (>= 20.x), Python (>= 3.10.x).
-- **Git**: Global git installation required.
+- Docker 20.10+ or Docker Desktop
+- Docker Buildx (for multi-architecture builds)
 
-### Quick Start
-
-1. **Prerequisites**: [mise](https://mise.jdx.dev/) is highly recommended for global tool management (automatically installed during setup).
-2. **Initialize**: `make setup` (bootstraps mise and core tools).
-3. **Install**: `make install` (installs project dependencies).
-4. **Verify**: `make verify` (ensures everything is green).
-
-### Configuration Reference
-
-| Parameter      | Purpose                                                           | Location                |
-| :------------- | :---------------------------------------------------------------- | :---------------------- |
-| `PROJECT_NAME` | Project identity                                                  | `init-project.sh`       |
-| `GITHUB_PROXY` | Network optimization (See [Proxy Usage](#-proxy-usage-scenarios)) | `scripts/lib/common.sh` |
-| `VERSION`      | Semantic versioning                                               | `package.json`          |
-
-### File Structure
-
-```text
-project-root/
-├── .agent/              # 🤖 Canonical AI configuration (The Brain)
-│   ├── rules/           # 📏 Unified AI behavioral rules (80+ sets, SSoT)
-│   └── workflows/       # 🛠️ Unified commands & AI workflows (SpecKit)
-├── .agents/             # 🧩 Shared command sources (Auto-managed symlinks)
-├── .github/             # 🐙 GitHub integration & Copilot settings
-├── .vscode/             # 💻 Optimized VS Code configurations
-└── src/                 # 📦 Your actual application source code
-```
-
----
-
-## 🛠️ Section 3 — Operations Guide
-
-### Pre-deployment Checklist
-
-1. Run `make verify` to ensure all quality gates are green.
-2. Run `make audit` to verify security compliance.
-3. Ensure `CHANGELOG.md` is updated.
-
-### Performance Considerations
-
-- **Linting Speed**: Pre-commit hooks target < 5s by scanning staged files only.
-- **CI Throughput**: GitHub Actions use matrix builds for parallel testing across OS types.
-
-### Troubleshooting
-
-- **Problem**: `make install` fails on Windows.
-  - **Diagnosis**: Check if `ExecutionPolicy` allows script execution.
-  - **Solution**: Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
-- **Problem**: Gitleaks detects false positives.
-  - **Diagnosis**: Check `.gitleaks.toml` allowlist.
-  - **Solution**: Add fingerprint to `.gitleaksignore`.
-- **Problem**: Pre-commit hooks fail on macOS after `make install` with Python errors.
-  - **Diagnosis**: Check if the venv exists: `ls .venv/bin/python`.
-  - **Solution**: Rebuild the venv: `rm -rf .venv && make install`.
-
----
-
-## 🔒 Section 4 — Security Considerations
-
-### Security Model
-
-- **Secret Management**: All secrets must be injected via environment variables or handled by HashiCorp Vault. Never commit `.env` files.
-- **Audit Logging**: All critical operations (commits, releases, state changes) are traced via Git and CI logs.
-- **Supply Chain**: All CI actions are pinned to exact versions/SHAs.
-
-### Best Practices
-
-| Aspect      | Requirement                  | Implementation                    |
-| :---------- | :--------------------------- | :-------------------------------- |
-| Secrets     | No plaintext secrets in repo | `gitleaks` enforced at commit     |
-| Integrity   | Verify downloads             | SHA-256 validation in `common.sh` |
-| Permissions | Non-root execution           | Dockerfile best practices         |
-
----
-
-## 🧑‍💻 Section 5 — Development Guide
-
-### Code Organization
-
-```text
-project-root/
-├── .agent/               # AI configuration (Single Source of Truth)
-│   ├── rules/            # 88 behavioral rule files for AI agents
-│   └── workflows/        # SpecKit slash-command definitions
-├── .github/              # GitHub ecosystem (Actions, templates, Dependabot)
-│   └── workflows/        # CI/CD pipelines (lint, verify, release, security)
-├── .devcontainer/        # DevContainer configuration for reproducible environments
-├── docs/                 # Project documentation
-│   ├── adr/              # Architecture Decision Records
-│   ├── runbooks/         # Operations and recovery runbooks
-│   └── glossary.md       # Bilingual term glossary
-├── scripts/              # POSIX shell automation (setup, install, verify)
-│   └── lib/              # Shared shell library functions
-└── Makefile              # Task orchestration (setup, install, lint, verify, audit)
-```
-
-**Naming Conventions**: Rule files use `NN-kebab-case.md` (core rules) or `technology.md`
-(language stacks). Workflow files use `namespace.verb.md`. Shell scripts use `kebab-case.sh`.
-
-### Extension Points
-
-1. **Adding Rules**: Create a new `.md` file in `.agent/rules/` and link it in `00-index.md`.
-2. **Adding Commands**: Add `.md` files to `.agent/workflows/`.
-3. **Adding IDE Support**: Create a redirect folder (e.g., `.myide/`) following the symlink pattern in Rule 03.
-
-### Local Development Setup
+### Build Commands
 
 ```bash
-git clone <repo>
-cd <repo>
-git config core.ignorecase false  # MANDATORY for Mac/Windows
-make setup
-make install
+# Build Debian 12
+docker build -t debian:12-local docker/12/
+
+# Build Debian 13
+docker build -t debian:13-local docker/13/
+
+# Build with specific platform
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t debian:13-local \
+  docker/13/
+
+# Build all platforms (requires buildx)
+docker buildx build \
+  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v5,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
+  -t debian:13-multi \
+  docker/13/
 ```
 
-### References
+## 📚 Documentation
 
-- [Full Documentation](docs/index.md)
-- [Project Glossary](docs/glossary.md)
-- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Docker Configuration Guide](docker/README.md) - Detailed docker setup and usage
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to this project
+- [Changelog](CHANGELOG.md) - Version history and release notes
+- [Security Policy](SECURITY.md) - Security reporting and policies
 
-### 🚀 Proxy Usage Scenarios
+## 🤝 Contributing
 
-The `GITHUB_PROXY` (default: `https://gh-proxy.sn0wdr1am.com/`) is optimized for specific network acceleration scenarios. Misusing it for unsupported protocols (like Git) will result in errors.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
 
-| Scenario              | Supported? | Example / Note                                         |
-| :-------------------- | :--------- | :----------------------------------------------------- |
-| **Release Files**     | ✅ Yes     | `.../releases/download/v1.0/tool.zip`                  |
-| **Source Archives**   | ✅ Yes     | `.../archive/master.zip` or `.tar.gz`                  |
-| **Direct File Links** | ✅ Yes     | `.../blob/master/filename`                             |
-| **Git Clone**         | ❌ **No**  | Do **not** use for `git clone` or `insteadOf` configs. |
-| **Project Folders**   | ❌ **No**  | Browsing/cloning via proxy is not supported.           |
+- Code of Conduct
+- Development workflow
+- Commit message conventions
+- Pull request process
 
-> [!IMPORTANT]
-> To prevent breaking toolchains (like `mise` or `asdf`), this template explicitly disables Git redirection via this proxy. Use it only for direct HTTP downloads in scripts.
+## 🔒 Security
+
+Security is a top priority. If you discover a security vulnerability, please follow our [Security Policy](SECURITY.md) for responsible disclosure.
 
 ## 📄 License
 
@@ -221,6 +229,18 @@ This project is licensed under the **MIT License**.
 Copyright (c) 2026-present [SnowdreamTech Inc.](https://github.com/snowdreamtech)
 See the [LICENSE](./LICENSE) file for the full license text.
 
+## 🙏 Acknowledgments
+
+- Based on official [Debian Docker images](https://hub.docker.com/_/debian)
+- Inspired by best practices from the Docker community
+- Built with [GitHub Actions](https://github.com/features/actions)
+
+## 📞 Support
+
+- 📧 Email: sn0wdr1am@qq.com
+- 🐛 Issues: [GitHub Issues](https://github.com/snowdreamtech/debian/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/snowdreamtech/debian/discussions)
+
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/image?repos=snowdreamtech/template&type=date&legend=top-left)](https://www.star-history.com/?repos=snowdreamtech%2Ftemplate&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/image?repos=snowdreamtech/debian&type=date&legend=top-left)](https://www.star-history.com/?repos=snowdreamtech%2Fdebian&type=date&legend=top-left)
