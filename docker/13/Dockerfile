@@ -93,7 +93,6 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \
-    && sed -i "s|Suites:\s*trixie\s*trixie-updates.*|Suites: trixie trixie-updates|g" /etc/apt/sources.list.d/debian.sources \
     && echo 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> /etc/bash.bashrc
 
 # System Initialization logic (User mapping, permissions) is handled in entrypoint.d scripts.
