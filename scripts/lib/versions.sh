@@ -23,7 +23,7 @@ set -eu
 # shellcheck disable=SC2034
 VER_GO="1.26.2"
 VER_NODE="25.9.0"
-VER_PNPM="10.33.0"
+VER_PNPM="10.33.1"
 VER_PNPM_PROVIDER="npm:pnpm"
 VER_PYTHON="3.14.4"
 VER_PIPX="1.11.0"
@@ -33,7 +33,7 @@ VER_PIPX_PROVIDER="pip"
 VER_KOTLIN="2.3.20"
 VER_RUST="1.95.0"
 VER_BUN="1.3.13"
-VER_DENO="2.7.12"
+VER_DENO="2.7.13"
 VER_ZIG="0.16.0"
 VER_JAVA="26.0.0"
 VER_DOTNET="10.0.203"
@@ -93,7 +93,7 @@ VER_APTOS_PROVIDER="github:aptos-labs/aptos-core"
 # ── 🔐 Tier 1: Security & Engineering (Mirror of .mise.toml) ─────────────────
 VER_GITLEAKS="8.30.1"
 VER_GITLEAKS_PROVIDER="github:gitleaks/gitleaks"
-VER_GH_CLI="2.90.0"
+VER_GH_CLI="2.91.0"
 VER_GH_CLI_PROVIDER="github:cli/cli"
 
 # ── 💎 Tier 1: Core Quality & Commit Tooling (Mirror of .mise.toml) ──────────
@@ -165,7 +165,7 @@ VER_ASSEMBLYSCRIPT_PROVIDER="npm:assemblyscript"
 VER_OPA="1.15.2"
 VER_OPA_PROVIDER="github:open-policy-agent/opa"
 
-VER_BUF="1.68.3"
+VER_BUF="1.68.4"
 VER_BUF_PROVIDER="github:bufbuild/buf"
 
 VER_CUE="0.16.1"
@@ -182,7 +182,7 @@ VER_VITEPRESS_PROVIDER="npm:vitepress"
 VER_ESLINT="10.2.1"
 VER_ESLINT_PROVIDER="npm:eslint"
 
-VER_MARKDOWNLINT="0.22.0"
+VER_MARKDOWNLINT="0.22.1"
 VER_MARKDOWNLINT_PROVIDER="npm:markdownlint-cli2"
 
 VER_SORT_PACKAGE_JSON="3.6.1"
@@ -218,7 +218,7 @@ VER_TRIVY_PROVIDER="github:aquasecurity/trivy"
 VER_OSV_SCANNER="2.3.5"
 VER_OSV_SCANNER_PROVIDER="github:google/osv-scanner"
 
-VER_GOVULNCHECK="1.2.0"
+VER_GOVULNCHECK="1.3.0"
 VER_GOVULNCHECK_PROVIDER="go:golang.org/x/vuln/cmd/govulncheck"
 
 # Updated 2026-04-05: Ensure latest versions are installed
@@ -258,5 +258,5 @@ VER_BATS_PROVIDER="npm:bats"
 
 # ── 🛠️ Mise Internal / Helpers ────────────────────────────────────────────────
 VER_MISE="2026.4.15"
-VER_USAGE="3.2.0"
+VER_USAGE="3.2.1"
 VER_USAGE_PROVIDER="usage"
