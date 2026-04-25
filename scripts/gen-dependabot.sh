@@ -10,7 +10,19 @@
 #   ecosystems actually present in the project.
 #
 # Usage:
-#   sh scripts/gen-dependabot.sh [--dry-run]
+#   sh scripts/gen-dependabot.sh [OPTIONS]
+#
+# Options:
+#   --dry-run              Show what would be generated without writing
+#   --help, -h             Show this help message
+#
+# Environment Variables:
+#   DEPENDABOT_TARGET_BRANCH    Target branch for PRs (default: dev)
+#   DEPENDABOT_PR_LIMIT         Max open PRs per ecosystem (default: 5)
+#   DEPENDABOT_COOLDOWN_DAYS    Days to wait before updating (default: 7)
+#   DEPENDABOT_INTERVAL         Update frequency (default: weekly)
+#   DEPENDABOT_DAY              Day of week for updates (default: monday)
+#   CONFIG_AUTO_UPDATE          Enable/disable generation (default: 1)
 #
 # Design:
 #   - Uses `git ls-files` to respect .gitignore automatically.
@@ -25,9 +37,85 @@ SCRIPT_DIR=$(cd "$(dirname "${0:-}")" && pwd)
 . "${SCRIPT_DIR:-}/lib/common.sh"
 
 # ── Configuration ────────────────────────────────────────────────────────────
-TARGET_BRANCH="dev"
+TARGET_BRANCH="${DEPENDABOT_TARGET_BRANCH:-dev}"
 DEPENDABOT_FILE=".github/dependabot.yml"
+OPEN_PR_LIMIT="${DEPENDABOT_PR_LIMIT:-5}"
+COOLDOWN_DAYS="${DEPENDABOT_COOLDOWN_DAYS:-7}"
+UPDATE_INTERVAL="${DEPENDABOT_INTERVAL:-weekly}"
+UPDATE_DAY="${DEPENDABOT_DAY:-monday}"
 DRY_RUN=0
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+# Purpose: Display help message
+show_help() {
+  cat <<'HELP'
+Dependabot Configuration Generator
+
+Usage: sh scripts/gen-dependabot.sh [OPTIONS]
+
+Options:
+  --dry-run              Show what would be generated without writing
+  --help, -h             Show this help message
+
+Environment Variables:
+  DEPENDABOT_TARGET_BRANCH    Target branch for PRs (default: dev)
+  DEPENDABOT_PR_LIMIT         Max open PRs per ecosystem (default: 5)
+  DEPENDABOT_COOLDOWN_DAYS    Days to wait before updating (default: 7)
+  DEPENDABOT_INTERVAL         Update frequency (default: weekly)
+  DEPENDABOT_DAY              Day of week for updates (default: monday)
+  CONFIG_AUTO_UPDATE          Enable/disable generation (default: 1)
+
+Examples:
+  # Generate with defaults
+  sh scripts/gen-dependabot.sh
+
+  # Preview without writing
+  sh scripts/gen-dependabot.sh --dry-run
+
+  # Custom configuration
+  DEPENDABOT_PR_LIMIT=10 DEPENDABOT_INTERVAL=daily sh scripts/gen-dependabot.sh
+
+Supported Ecosystems:
+  - GitHub Actions, npm, pip, Go, Rust, PHP, Ruby, Docker
+  - Terraform, Helm, Bazel, Bun, Conda, Julia, Pre-commit
+  - And 15+ more...
+
+HELP
+}
+
+# Purpose: Validate YAML syntax (basic check)
+validate_yaml() {
+  _file="${1:-}"
+  if [ ! -f "${_file:-}" ]; then
+    echo "ERROR: File not found: ${_file:-}" >&2
+    return 1
+  fi
+
+  # Basic YAML validation: check for common syntax errors
+  if ! grep -q "^version: 2" "${_file:-}"; then
+    echo "ERROR: Missing 'version: 2' in YAML" >&2
+    return 1
+  fi
+
+  if ! grep -q "^updates:" "${_file:-}"; then
+    echo "ERROR: Missing 'updates:' section in YAML" >&2
+    return 1
+  fi
+
+  # Check for balanced quotes (basic check)
+  _single_quotes=$(grep -o "'" "${_file:-}" | wc -l)
+  _double_quotes=$(grep -o '"' "${_file:-}" | wc -l)
+
+  if [ $((${_single_quotes:-0} % 2)) -ne 0 ]; then
+    echo "WARNING: Unbalanced single quotes detected" >&2
+  fi
+
+  if [ $((${_double_quotes:-0} % 2)) -ne 0 ]; then
+    echo "WARNING: Unbalanced double quotes detected" >&2
+  fi
+
+  return 0
+}
 
 # ── Label Mapping ────────────────────────────────────────────────────────────
 # Purpose: Returns the ecosystem-specific label for Dependabot PR labeling.
@@ -115,12 +203,12 @@ emit_entry() {
   _label=$(get_label "${_ecosystem:-}")
 
   # 1. Frequency Tiering: Most ecosystems weekly to reduce noise.
-  _interval="weekly"
+  _interval="${UPDATE_INTERVAL:-weekly}"
   case "${_ecosystem:-}" in
   # Core ecosystems stay daily unless project stability favors weekly.
   # For this project, we prefer weekly (Monday) across the board for balance.
   # npm | gomod | bun | pip | uv) _interval="daily" ;;
-  *) _interval="weekly" ;;
+  *) _interval="${UPDATE_INTERVAL:-weekly}" ;;
   esac
 
   # 4. Semantic Commit Prefixes: ci for actions, build for infra, chore for deps
@@ -129,9 +217,6 @@ emit_entry() {
   github-actions) _prefix="ci(deps):" ;;
   docker | devcontainers) _prefix="build(deps):" ;;
   esac
-
-  # 5. Reviewers: Auto-assign reviewers to Dependabot PRs
-  _reviewers='reviewers: ["snowdream"]'
 
   # 3. Label Refinement: Add semantic labels
   _extra_labels=""
@@ -150,59 +235,170 @@ emit_entry() {
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "${TARGET_BRANCH:-}"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: ${OPEN_PR_LIMIT:-5}
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+EOF
+
+  # Add ecosystem-specific groups to further reduce noise
+  # CRITICAL: Avoid overlapping patterns to prevent duplicate PRs
+  if [ "${_ecosystem:-}" = "npm" ] || [ "${_ecosystem:-}" = "bun" ]; then
+    # Use directory-specific group names to avoid conflicts
+    _dir_suffix=$(echo "${_directory}" | sed 's/\//-/g' | sed 's/^-//')
+    [ -z "${_dir_suffix}" ] && _dir_suffix="root"
+
+    cat <<EOF
+      📦-${_ecosystem}-${_dir_suffix}-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+        exclude-patterns:
+          - "eslint*"
+          - "prettier*"
+          - "stylelint*"
+          - "vitest*"
+          - "jest*"
+          - "playwright*"
+          - "cypress*"
+          - "vite*"
+          - "@vitejs/*"
+      🧹-${_dir_suffix}-lint-dependencies:
+        patterns: ["eslint*", "prettier*", "stylelint*"]
+        update-types:
+          - "patch"
+          - "minor"
+      🧪-${_dir_suffix}-testing-frameworks:
+        patterns: ["vitest*", "jest*", "playwright*", "cypress*"]
+        update-types:
+          - "patch"
+          - "minor"
+      ⚡-${_dir_suffix}-vite-suite:
+        patterns: ["vite*", "@vitejs/*"]
         update-types:
           - "patch"
           - "minor"
 EOF
-
-  # Add ecosystem-specific groups to further reduce noise
-  if [ "${_ecosystem:-}" = "npm" ]; then
+  elif [ "${_ecosystem:-}" = "pip" ] || [ "${_ecosystem:-}" = "uv" ] || [ "${_ecosystem:-}" = "conda" ]; then
     cat <<EOF
-      🧹-lint-dependencies:
-        patterns: ["eslint*", "prettier*", "stylelint*"]
-      🧪-testing-frameworks:
-        patterns: ["vitest*", "jest*", "playwright*", "cypress*"]
-      ⚡-vite-suite:
-        patterns: ["vite*", "@vitejs/*"]
+      📦-python-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+        exclude-patterns:
+          - "pytest*"
+          - "black*"
+          - "flake8*"
+          - "mypy*"
+          - "ruff*"
+      🧹-python-dev-tools:
+        patterns: ["pytest*", "black*", "flake8*", "mypy*", "ruff*"]
+        update-types:
+          - "patch"
+          - "minor"
 EOF
   elif [ "${_ecosystem:-}" = "github-actions" ]; then
     cat <<EOF
       🔧-actions-updates:
         patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
 EOF
-  elif [ "${_ecosystem:-}" = "docker" ] || [ "${_ecosystem:-}" = "devcontainers" ]; then
+  elif [ "${_ecosystem:-}" = "docker" ]; then
     cat <<EOF
-      🐳-base-images:
-        patterns: ["alpine*", "ubuntu*", "debian*", "rocky*", "rockylinux*", "rhel*", "node*", "python*", "golang*"]
+      🐳-docker-updates:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+EOF
+  elif [ "${_ecosystem:-}" = "devcontainers" ]; then
+    cat <<EOF
+      🐳-devcontainer-updates:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
 EOF
   elif [ "${_ecosystem:-}" = "pre-commit" ]; then
     cat <<EOF
       🧹-pre-commit-hooks:
         patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
 EOF
   elif [ "${_ecosystem:-}" = "gomod" ]; then
     cat <<EOF
+      📦-go-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+        exclude-patterns:
+          - "google.golang.org/*"
+          - "github.com/aws/*"
+          - "github.com/azure/*"
+          - "github.com/snowdreamtech/*"
       🧪-go-cloud-suite:
         patterns: ["google.golang.org/*", "github.com/aws/*", "github.com/azure/*"]
+        update-types:
+          - "patch"
+          - "minor"
       🌟-snowdreamtech-suite:
         patterns: ["github.com/snowdreamtech/*"]
+        update-types:
+          - "patch"
+          - "minor"
+EOF
+  elif [ "${_ecosystem:-}" = "cargo" ]; then
+    cat <<EOF
+      📦-rust-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+EOF
+  elif [ "${_ecosystem:-}" = "composer" ]; then
+    cat <<EOF
+      📦-php-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
+        exclude-patterns:
+          - "phpunit/*"
+          - "phpstan/*"
+          - "psalm/*"
+      🧪-php-dev-tools:
+        patterns: ["phpunit/*", "phpstan/*", "psalm/*"]
+        update-types:
+          - "patch"
+          - "minor"
+EOF
+  else
+    # Default grouping for other ecosystems
+    cat <<EOF
+      📦-all-patch-minor:
+        patterns: ["*"]
+        update-types:
+          - "patch"
+          - "minor"
 EOF
   fi
 
   cat <<EOF
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: ${_interval} updates on ${UPDATE_DAY}
     schedule:
       interval: "${_interval}"
-      day: "monday"
+      day: "${UPDATE_DAY}"
     # 6.1 Cooldown: Wait for software to be stable before updating (Zizmor compliance)
     cooldown:
-      default-days: 7
+      default-days: ${COOLDOWN_DAYS}
     # 7. Commit Format: Semantic commit prefixes
     commit-message:
       prefix: "${_prefix}"
@@ -285,7 +481,7 @@ scan_ecosystems() {
   fi
 
   # ── 8. Docker ───────────────────────────────────────────────────────────
-  _docker_dirs=$(find_dirs_for_patterns "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml")
+  _docker_dirs=$(find_dirs_for_patterns "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml" | grep -v -E '(node_modules/|vendor/|\.terraform/)' || true)
   if [ -n "${_docker_dirs:-}" ]; then
     echo "${_docker_dirs:-}" | while IFS= read -r _d; do
       if [ -n "${_d:-}" ]; then _emit_unique "docker" "${_d:-}"; fi
@@ -358,7 +554,7 @@ scan_ecosystems() {
   fi
 
   # ── 17. Terraform ────────────────────────────────────────────────────────
-  _tf_files=$(git ls-files "*.tf" "**/*.tf" 2>/dev/null | grep -v '\.terraform/' || true)
+  _tf_files=$(git ls-files "*.tf" "**/*.tf" 2>/dev/null | grep -v -E '(\.terraform/|node_modules/|vendor/)' || true)
   if [ -n "${_tf_files:-}" ]; then
     _tf_dirs=$(echo "${_tf_files:-}" | while IFS= read -r _f; do
       _d=$(dirname "${_f:-}")
@@ -463,12 +659,22 @@ main() {
   for _arg in "$@"; do
     case "${_arg:-}" in
     --dry-run) DRY_RUN=1 ;;
+    --help | -h)
+      show_help
+      exit 0
+      ;;
+    *)
+      echo "ERROR: Unknown option: ${_arg:-}" >&2
+      echo "Run with --help for usage information." >&2
+      exit 1
+      ;;
     esac
   done
 
   # Ensure we are in a git repository
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "ERROR: Not inside a git repository." >&2
+    echo "This script must be run from within a git repository." >&2
     exit 1
   fi
 
@@ -507,6 +713,7 @@ HEADER
 
   if [ -z "${_ENTRIES:-}" ]; then
     echo "WARNING: No ecosystems detected. The generated file will have no update entries." >&2
+    echo "         Make sure you have manifest files (package.json, go.mod, etc.) in your repository." >&2
   fi
 
   _OUTPUT="${_HEADER:-}
@@ -515,23 +722,46 @@ ${_ENTRIES:-}"
   if [ "${DRY_RUN:-}" -eq 1 ]; then
     echo "# [DRY-RUN] Would write to ${DEPENDABOT_FILE:-}:"
     echo "${_OUTPUT:-}"
+    echo ""
+    echo "# Configuration:"
+    echo "#   Target Branch: ${TARGET_BRANCH:-}"
+    echo "#   PR Limit: ${OPEN_PR_LIMIT:-}"
+    echo "#   Cooldown: ${COOLDOWN_DAYS:-} days"
+    echo "#   Interval: ${UPDATE_INTERVAL:-}"
+    echo "#   Day: ${UPDATE_DAY:-}"
   else
     mkdir -p "$(dirname "${DEPENDABOT_FILE:-}")"
     echo "${_OUTPUT:-}" >"${DEPENDABOT_FILE:-}"
-    echo "✅ Generated ${DEPENDABOT_FILE:-} successfully." >&2
+
+    # Validate generated YAML
+    if validate_yaml "${DEPENDABOT_FILE:-}"; then
+      echo "✅ Generated ${DEPENDABOT_FILE:-} successfully." >&2
+    else
+      echo "⚠️  Generated ${DEPENDABOT_FILE:-} but validation warnings detected." >&2
+    fi
+
     _COUNT=$(echo "${_ENTRIES:-}" | grep -c 'package-ecosystem' || true)
     echo "   Ecosystems detected: ${_COUNT:-}" >&2
+    echo "   Configuration: target=${TARGET_BRANCH:-}, pr-limit=${OPEN_PR_LIMIT:-}, cooldown=${COOLDOWN_DAYS:-}d" >&2
 
     # Generate Markdown Summary for CI
-    {
-      echo "### 📦 Dependabot Generation Summary"
-      echo ""
-      echo "| Ecosystem | Directory | Update Frequency |"
-      echo "| :--- | :--- | :--- |"
-      echo "${_ENTRIES:-}" | awk -F': ' '/package-ecosystem:/ {e=$2} /directory:/ {d=$2} /interval:/ {i=$2; printf "| %s | `%s` | %s |\n", e, d, i}' | sed 's/"//g'
-      echo ""
-      echo "> Generated by \`scripts/gen-dependabot.sh\` at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-    } >>"${CI_STEP_SUMMARY:-}"
+    if [ -n "${CI_STEP_SUMMARY:-}" ]; then
+      {
+        echo "### 📦 Dependabot Generation Summary"
+        echo ""
+        echo "**Configuration:**"
+        echo "- Target Branch: \`${TARGET_BRANCH:-}\`"
+        echo "- PR Limit: \`${OPEN_PR_LIMIT:-}\`"
+        echo "- Cooldown: \`${COOLDOWN_DAYS:-}\` days"
+        echo "- Update Schedule: \`${UPDATE_INTERVAL:-}\` on \`${UPDATE_DAY:-}\`"
+        echo ""
+        echo "| Ecosystem | Directory | Update Frequency |"
+        echo "| :--- | :--- | :--- |"
+        echo "${_ENTRIES:-}" | awk -F': ' '/package-ecosystem:/ {e=$2} /directory:/ {d=$2} /interval:/ {i=$2; printf "| %s | `%s` | %s |\n", e, d, i}' | sed 's/"//g'
+        echo ""
+        echo "> Generated by \`scripts/gen-dependabot.sh\` at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+      } >>"${CI_STEP_SUMMARY:-}"
+    fi
   fi
 }
 

@@ -77,10 +77,14 @@ assert_contains 'directory: "/"'
 assert_contains 'directory: "/docs"'
 assert_contains 'package-ecosystem: "docker"'
 assert_contains 'package-ecosystem: "pre-commit"'
-assert_contains "📦-all-patch-minor"
-assert_contains "🧹-lint-dependencies"
+assert_contains "📦-npm-root-patch-minor"
+assert_contains "🧹-root-lint-dependencies"
 assert_contains "🔧-actions-updates"
 assert_contains 'rebase-strategy: "auto"'
-assert_contains 'open-pull-requests-limit: 10'
+assert_contains 'open-pull-requests-limit: 5'
+assert_contains 'update-types:'
+assert_contains 'exclude-patterns:'
+assert_contains 'cooldown:'
+assert_contains 'default-days: 7'
 
 echo "✨ Smoke test PASSED successfully!"

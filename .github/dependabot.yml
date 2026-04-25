@@ -27,18 +27,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🔧-actions-updates:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🔧-actions-updates:
-        patterns: ["*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -59,22 +58,42 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      📦-npm-root-patch-minor:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🧹-lint-dependencies:
+        exclude-patterns:
+          - "eslint*"
+          - "prettier*"
+          - "stylelint*"
+          - "vitest*"
+          - "jest*"
+          - "playwright*"
+          - "cypress*"
+          - "vite*"
+          - "@vitejs/*"
+      🧹-root-lint-dependencies:
         patterns: ["eslint*", "prettier*", "stylelint*"]
-      🧪-testing-frameworks:
+        update-types:
+          - "patch"
+          - "minor"
+      🧪-root-testing-frameworks:
         patterns: ["vitest*", "jest*", "playwright*", "cypress*"]
-      ⚡-vite-suite:
+        update-types:
+          - "patch"
+          - "minor"
+      ⚡-root-vite-suite:
         patterns: ["vite*", "@vitejs/*"]
-    # 6. Scheduling: Weekly updates on Monday
+        update-types:
+          - "patch"
+          - "minor"
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -94,22 +113,42 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      📦-npm-docs-patch-minor:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🧹-lint-dependencies:
+        exclude-patterns:
+          - "eslint*"
+          - "prettier*"
+          - "stylelint*"
+          - "vitest*"
+          - "jest*"
+          - "playwright*"
+          - "cypress*"
+          - "vite*"
+          - "@vitejs/*"
+      🧹-docs-lint-dependencies:
         patterns: ["eslint*", "prettier*", "stylelint*"]
-      🧪-testing-frameworks:
+        update-types:
+          - "patch"
+          - "minor"
+      🧪-docs-testing-frameworks:
         patterns: ["vitest*", "jest*", "playwright*", "cypress*"]
-      ⚡-vite-suite:
+        update-types:
+          - "patch"
+          - "minor"
+      ⚡-docs-vite-suite:
         patterns: ["vite*", "@vitejs/*"]
-    # 6. Scheduling: Weekly updates on Monday
+        update-types:
+          - "patch"
+          - "minor"
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -129,18 +168,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🐳-docker-updates:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🐳-base-images:
-        patterns: ["alpine*", "ubuntu*", "debian*", "rocky*", "rockylinux*", "rhel*", "node*", "python*", "golang*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -225,18 +263,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🐳-devcontainer-updates:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🐳-base-images:
-        patterns: ["alpine*", "ubuntu*", "debian*", "rocky*", "rockylinux*", "rhel*", "node*", "python*", "golang*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -257,18 +294,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🧹-pre-commit-hooks:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🧹-pre-commit-hooks:
-        patterns: ["*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"

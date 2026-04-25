@@ -25,6 +25,7 @@ set -eu
 # ── Common Library ───────────────────────────────────────────────────────────
 SCRIPT_DIR=$(cd "$(dirname "${0:-}")" && pwd)
 . "${SCRIPT_DIR:-}/lib/common.sh"
+. "${SCRIPT_DIR:-}/lib/github-api-info.sh"
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
@@ -264,6 +265,9 @@ main() {
     local _TOTAL_DUR_M
     _TOTAL_DUR_M=$(($(date +%s) - _START_TIME_M))
     printf "\n**Total Duration: %ss**\n" "${_TOTAL_DUR_M:-}" >>"${CI_STEP_SUMMARY:-}"
+
+    # Add GitHub API rate limit info
+    append_github_api_info
 
     printf "\n"
     finalize_summary_table

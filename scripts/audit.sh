@@ -29,6 +29,7 @@ set -eu
 # ── Common Library ───────────────────────────────────────────────────────────
 SCRIPT_DIR=$(cd "$(dirname "${0:-}")" && pwd)
 . "${SCRIPT_DIR:-}/lib/common.sh"
+. "${SCRIPT_DIR:-}/lib/github-api-info.sh"
 
 # Purpose: Displays usage information for the security auditor.
 # Examples:
@@ -470,6 +471,9 @@ main() {
     local _TOTAL_DUR_AUD
     _TOTAL_DUR_AUD=$(($(date +%s) - _START_TIME_AUDIT))
     printf "\n**Total Duration: %ss**\n" "${_TOTAL_DUR_AUD:-}" >>"${CI_STEP_SUMMARY:-}"
+
+    # Add GitHub API rate limit info
+    append_github_api_info
 
     printf "\n"
     finalize_summary_table

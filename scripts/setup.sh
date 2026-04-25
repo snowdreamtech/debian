@@ -32,6 +32,8 @@ SCRIPT_DIR=$(cd "$(dirname "${0:-}")" && pwd)
 . "${SCRIPT_DIR:-}/lib/registry.sh"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR:-}/lib/versions.sh"
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR:-}/lib/github-api-info.sh"
 
 # ── Extension Modules Sourcing ───────────────────────────────────────────────
 # Dynamically load all language-specific setup modules.
@@ -413,6 +415,10 @@ EOF
   if [ "${_IS_TOP_LEVEL:-true}" = "true" ]; then
     local _TOTAL_DUR_MAIN=$(($(date +%s) - _START_TIME_MAIN))
     printf "\n**Total Duration: %ss**\n" "${_TOTAL_DUR_MAIN:-}" >>"${CI_STEP_SUMMARY:-}"
+
+    # Add GitHub API rate limit info
+    append_github_api_info
+
     printf "\n"
     finalize_summary_table
     log_info "\n✨ Setup step complete!"

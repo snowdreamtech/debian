@@ -141,8 +141,9 @@ Our CI workflows already implement:
 
 ## References
 
-- [mise Registry Source](https://github.com/jdx/mise/blob/main/registry.toml)
-- [mise Security Documentation](https://mise.jdx.dev/security.html)
+- [mise Registry Documentation](https://mise.jdx.dev/registry.html)
+- [mise Security Policy](https://github.com/jdx/mise/blob/main/SECURITY.md)
+- [mise Paranoid Mode](https://mise.jdx.dev/paranoid)
 - [SLSA Framework](https://slsa.dev/)
 
 ## Action Items
