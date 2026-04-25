@@ -199,18 +199,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🐳-docker-updates:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🐳-base-images:
-        patterns: ["alpine*", "ubuntu*", "debian*", "rocky*", "rockylinux*", "rhel*", "node*", "python*", "golang*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"
@@ -231,18 +230,17 @@ updates:
     # 1. Target Branch: dev (Ensures updates are validated in development)
     target-branch: "dev"
     # 2. Concurrency: Prevent PR-bombing
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
     # 4. Grouping: Consolidate updates to reduce PR noise
     groups:
-      📦-all-patch-minor:
+      🐳-docker-updates:
+        patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-      🐳-base-images:
-        patterns: ["alpine*", "ubuntu*", "debian*", "rocky*", "rockylinux*", "rhel*", "node*", "python*", "golang*"]
-    # 6. Scheduling: Weekly updates on Monday
+    # 6. Scheduling: weekly updates on monday
     schedule:
       interval: "weekly"
       day: "monday"

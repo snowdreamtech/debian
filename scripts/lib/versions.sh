@@ -23,19 +23,19 @@ set -eu
 # shellcheck disable=SC2034
 VER_GO="1.26.2"
 VER_NODE="25.9.0"
-VER_PNPM="10.33.1"
+VER_PNPM="10.33.2"
 VER_PNPM_PROVIDER="npm:pnpm"
 VER_PYTHON="3.14.4"
 VER_PIPX="1.11.0"
 VER_PIPX_PROVIDER="pip"
 
 # ── 🏗️ Tier 2: Language Runtimes (On-demand) ─────────────────────────────────
-VER_KOTLIN="2.3.20"
+VER_KOTLIN="2.3.21"
 VER_RUST="1.95.0"
 VER_BUN="1.3.13"
 VER_DENO="2.7.13"
 VER_ZIG="0.16.0"
-VER_JAVA="26.0.0"
+VER_JAVA="26.0.1"
 VER_DOTNET="10.0.203"
 VER_RUBY="4.0.3"
 VER_YARN="1.22.22"
@@ -153,13 +153,13 @@ VER_SWIFTLINT_PROVIDER="github:realm/SwiftLint"
 
 VER_RUBOCOP_PROVIDER="gem:rubocop"
 
-VER_STYLELINT="17.8.0"
+VER_STYLELINT="17.9.0"
 VER_STYLELINT_PROVIDER="npm:stylelint"
 
 VER_STYLELINT_CONFIG="40.0.0"
 VER_STYLELINT_CONFIG_PROVIDER="npm:stylelint-config-standard"
 
-VER_ASSEMBLYSCRIPT="0.28.14"
+VER_ASSEMBLYSCRIPT="0.28.15"
 VER_ASSEMBLYSCRIPT_PROVIDER="npm:assemblyscript"
 
 VER_OPA="1.15.2"
@@ -197,7 +197,7 @@ VER_HADOLINT_PROVIDER="github:hadolint/hadolint"
 VER_DOCKERFILE_UTILS="0.16.3"
 VER_DOCKERFILE_UTILS_PROVIDER="npm:dockerfile-utils"
 
-VER_RUFF="0.15.11"
+VER_RUFF="0.15.12"
 VER_RUFF_PROVIDER="github:astral-sh/ruff"
 
 VER_CLANG_FORMAT="22.1.4"
@@ -238,7 +238,7 @@ VER_TERRAFORM="1.11.0"
 VER_TERRAGRUNT="1.0.0-rc3"
 VER_TOFU="1.11.6"
 VER_TOFU_PROVIDER="github:opentofu/opentofu"
-VER_PULUMI="3.231.0"
+VER_PULUMI="3.232.0"
 VER_PULUMI_PROVIDER="github:pulumi/pulumi"
 VER_KUBE_LINTER="0.8.3"
 VER_KUBE_LINTER_PROVIDER="github:stackrox/kube-linter"
