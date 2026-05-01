@@ -238,160 +238,14 @@ emit_entry() {
     open-pull-requests-limit: ${OPEN_PR_LIMIT:-5}
     # 3. Management: Auto-rebase to resolve conflicts
     rebase-strategy: "auto"
-    # 4. Grouping: Consolidate updates to reduce PR noise
+    # 4. Grouping: Consolidate ALL updates into a single PR
     groups:
-EOF
-
-  # Add ecosystem-specific groups to further reduce noise
-  # CRITICAL: Avoid overlapping patterns to prevent duplicate PRs
-  if [ "${_ecosystem:-}" = "npm" ] || [ "${_ecosystem:-}" = "bun" ]; then
-    # Use directory-specific group names to avoid conflicts
-    _dir_suffix=$(echo "${_directory}" | sed 's/\//-/g' | sed 's/^-//')
-    [ -z "${_dir_suffix}" ] && _dir_suffix="root"
-
-    cat <<EOF
-      📦-${_ecosystem}-${_dir_suffix}-patch-minor:
+      all-dependencies:
         patterns: ["*"]
         update-types:
           - "patch"
           - "minor"
-        exclude-patterns:
-          - "eslint*"
-          - "prettier*"
-          - "stylelint*"
-          - "vitest*"
-          - "jest*"
-          - "playwright*"
-          - "cypress*"
-          - "vite*"
-          - "@vitejs/*"
-      🧹-${_dir_suffix}-lint-dependencies:
-        patterns: ["eslint*", "prettier*", "stylelint*"]
-        update-types:
-          - "patch"
-          - "minor"
-      🧪-${_dir_suffix}-testing-frameworks:
-        patterns: ["vitest*", "jest*", "playwright*", "cypress*"]
-        update-types:
-          - "patch"
-          - "minor"
-      ⚡-${_dir_suffix}-vite-suite:
-        patterns: ["vite*", "@vitejs/*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "pip" ] || [ "${_ecosystem:-}" = "uv" ] || [ "${_ecosystem:-}" = "conda" ]; then
-    cat <<EOF
-      📦-python-patch-minor:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-        exclude-patterns:
-          - "pytest*"
-          - "black*"
-          - "flake8*"
-          - "mypy*"
-          - "ruff*"
-      🧹-python-dev-tools:
-        patterns: ["pytest*", "black*", "flake8*", "mypy*", "ruff*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "github-actions" ]; then
-    cat <<EOF
-      🔧-actions-updates:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "docker" ]; then
-    cat <<EOF
-      🐳-docker-updates:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "devcontainers" ]; then
-    cat <<EOF
-      🐳-devcontainer-updates:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "pre-commit" ]; then
-    cat <<EOF
-      🧹-pre-commit-hooks:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "gomod" ]; then
-    cat <<EOF
-      📦-go-patch-minor:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-        exclude-patterns:
-          - "google.golang.org/*"
-          - "github.com/aws/*"
-          - "github.com/azure/*"
-          - "github.com/snowdreamtech/*"
-      🧪-go-cloud-suite:
-        patterns: ["google.golang.org/*", "github.com/aws/*", "github.com/azure/*"]
-        update-types:
-          - "patch"
-          - "minor"
-      🌟-snowdreamtech-suite:
-        patterns: ["github.com/snowdreamtech/*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "cargo" ]; then
-    cat <<EOF
-      📦-rust-patch-minor:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  elif [ "${_ecosystem:-}" = "composer" ]; then
-    cat <<EOF
-      📦-php-patch-minor:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-        exclude-patterns:
-          - "phpunit/*"
-          - "phpstan/*"
-          - "psalm/*"
-      🧪-php-dev-tools:
-        patterns: ["phpunit/*", "phpstan/*", "psalm/*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  else
-    # Default grouping for other ecosystems
-    cat <<EOF
-      📦-all-patch-minor:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-EOF
-  fi
-
-  cat <<EOF
+          - "major"
     # 6. Scheduling: ${_interval} updates on ${UPDATE_DAY}
     schedule:
       interval: "${_interval}"
@@ -481,8 +335,13 @@ scan_ecosystems() {
   fi
 
   # ── 8. Docker ───────────────────────────────────────────────────────────
-  _docker_dirs=$(find_dirs_for_patterns "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml" | grep -v -E '(node_modules/|vendor/|\.terraform/)' || true)
-  if [ -n "${_docker_dirs:-}" ]; then
+  # Exclude .devcontainer directory as it's handled by devcontainers ecosystem
+  _docker_files=$(git ls-files "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml" 2>/dev/null | grep -v -E '(node_modules/|vendor/|\.terraform/|\.devcontainer/)' || true)
+  if [ -n "${_docker_files:-}" ]; then
+    _docker_dirs=$(echo "${_docker_files:-}" | while IFS= read -r _file; do
+      _dir=$(dirname "${_file:-}")
+      [ "${_dir:-}" = "." ] && echo "/" || echo "/$_dir"
+    done | sort -u)
     echo "${_docker_dirs:-}" | while IFS= read -r _d; do
       if [ -n "${_d:-}" ]; then _emit_unique "docker" "${_d:-}"; fi
     done
@@ -566,11 +425,12 @@ scan_ecosystems() {
   fi
 
   # ── 18. Dev Containers ──────────────────────────────────────────────────
-  _dc_dirs=$(find_dirs_for_patterns "devcontainer.json" ".devcontainer.json" "**/devcontainer.json" "**/.devcontainer.json")
-  if [ -n "${_dc_dirs:-}" ]; then
-    echo "${_dc_dirs:-}" | while IFS= read -r _d; do
-      if [ -n "${_d:-}" ]; then _emit_unique "devcontainers" "${_d:-}"; fi
-    done
+  # Note: Dependabot's devcontainers ecosystem requires directory to point to the
+  # parent directory containing .devcontainer/, not .devcontainer/ itself.
+  # It looks for: .devcontainer.json OR .devcontainer/devcontainer.json OR .devcontainer/<name>/devcontainer.json
+  if has_tracked_file ".devcontainer.json" ".devcontainer/devcontainer.json" ".devcontainer/*/devcontainer.json"; then
+    # For root-level .devcontainer, always use "/"
+    _emit_unique "devcontainers" "/"
   fi
 
   # ── 19. Bazel ────────────────────────────────────────────────────────────

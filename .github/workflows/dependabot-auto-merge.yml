@@ -17,12 +17,12 @@ jobs:
     concurrency:
       group: auto-merge-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
-    timeout-minutes: 15
+    timeout-minutes: 30
     # Only run for Dependabot PRs
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - name: "🔒 Harden Runner (Security Egress Audit)"
-        uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
+        uses: step-security/harden-runner@8d3c67de8e2fe68ef647c8db1e6a09f647780f40 # v2.19.0
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -41,15 +41,14 @@ jobs:
 
       - name: "📊 Fetch Dependabot Metadata"
         id: metadata
-        uses: dependabot/fetch-metadata@ffa630c65fa7e0ecfa0625b5ceda64399aea1b36 # v3.0.0
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: "✅ Approve PR (for Branch Protection)"
-        # Automatically approve patch and minor updates
-        if: |
-          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        # Automatically approve ALL updates (patch, minor, and major)
+        # ⚠️  WARNING: Major updates may contain breaking changes
+        # Ensure your CI/CD pipeline has comprehensive tests
         shell: sh
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -58,14 +57,44 @@ jobs:
           gh pr review --approve "$PR_URL"
 
       - name: "🚢 Enable Auto-Merge"
-        if: |
-          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        # Enable auto-merge for ALL updates (patch, minor, and major)
+        # ⚠️  WARNING: Major updates may contain breaking changes
+        # The PR will only merge if all CI checks pass
         shell: sh
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
-          # gh pr merge --auto --merge "$PR_URL"
-          # gh pr merge --auto --squash "$PR_URL"
+          # Enable auto-merge with rebase strategy
+          # PR will be automatically merged when all checks pass
+          # and will be automatically closed after merge (GitHub default behavior)
           gh pr merge --auto --rebase "$PR_URL"
+          echo "✅ Auto-merge enabled for $PR_URL"
+          echo "⏳ PR will merge automatically when all checks pass"
+          echo "🔒 PR will be closed automatically after merge"
+
+      - name: "📝 Add Comment"
+        # Add informative comment about auto-merge status
+        shell: sh
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          DEPENDENCY_NAMES: ${{ steps.metadata.outputs.dependency-names }}
+        run: |
+          # Determine if this is a major update
+          _is_major=""
+          if echo "$UPDATE_TYPE" | grep -q "major"; then
+            _is_major="⚠️  **MAJOR UPDATE** - May contain breaking changes"
+          fi
+
+          gh pr comment "$PR_URL" --body "🤖 **Auto-merge enabled**
+
+          - ✅ PR approved automatically
+          - � Dependencies: \`$DEPENDENCY_NAMES\`
+          - �🔄 Update type: \`$UPDATE_TYPE\`
+          ${_is_major:+- $_is_major}
+          - ⏳ Will merge when all checks pass
+          - 🔒 Will close automatically after merge
+
+          No manual action required. CI tests will validate the changes."

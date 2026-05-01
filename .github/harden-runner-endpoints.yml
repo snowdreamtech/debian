@@ -7,20 +7,18 @@
 # For simple workflows that only interact with GitHub
 minimal:
   - api.github.com:443
-  - "*.githubusercontent.com:443"
   - github.com:443
+  - "*.githubusercontent.com:443"
   - mise.run:443
-  - install.mise.jdx.dev:443
   - "*.mise.jdx.dev:443"
 
 # Profile: standard
 # For workflows that install dependencies from common package managers
 standard:
   - api.github.com:443
-  - "*.githubusercontent.com:443"
   - github.com:443
+  - "*.githubusercontent.com:443"
   - mise.run:443
-  - install.mise.jdx.dev:443
   - "*.mise.jdx.dev:443"
   # Package managers
   - packages.microsoft.com:443
@@ -46,15 +44,21 @@ standard:
   - registry.terraform.io:443
   - formulae.brew.sh:443
   - repo.yarnpkg.com:443
+  # CDN & Download mirrors
+  - nodejs.org:443
+  - deno.land:443
+  - cdn.deno.land:443
+  - downloads.gradle.org:443
+  - services.gradle.org:443
+  - downloads.gradle-dn.com:443
 
 # Profile: full
 # For CI/CD workflows with containers and security scanning
 full:
   - api.github.com:443
-  - "*.githubusercontent.com:443"
   - github.com:443
+  - "*.githubusercontent.com:443"
   - mise.run:443
-  - install.mise.jdx.dev:443
   - "*.mise.jdx.dev:443"
   # Package managers
   - packages.microsoft.com:443
@@ -80,12 +84,21 @@ full:
   - registry.terraform.io:443
   - formulae.brew.sh:443
   - repo.yarnpkg.com:443
+  # CDN & Download mirrors
+  - nodejs.org:443
+  - deno.land:443
+  - cdn.deno.land:443
+  - downloads.gradle.org:443
+  - services.gradle.org:443
+  - downloads.gradle-dn.com:443
   # Container registries
-  - mise.jdx.dev:443
   - ghcr.io:443
   - pkg-containers.githubusercontent.com:443
   - public.ecr.aws:443
   - production.cloudflare.docker.com:443
+  - registry-1.docker.io:443
+  - auth.docker.io:443
+  - index.docker.io:443
   - "*.gcr.io:443"
   - "*.pkg.dev:443"
   - "*.quay.io:443"
@@ -102,17 +115,18 @@ full:
 # For security audit workflows (scorecard, nightly-audit)
 audit:
   - api.github.com:443
-  - "*.githubusercontent.com:443"
   - github.com:443
+  - "*.githubusercontent.com:443"
   - mise.run:443
-  - install.mise.jdx.dev:443
   - "*.mise.jdx.dev:443"
   # Container registries (minimal)
-  - mise.jdx.dev:443
   - ghcr.io:443
   - pkg-containers.githubusercontent.com:443
   - public.ecr.aws:443
   - production.cloudflare.docker.com:443
+  - registry-1.docker.io:443
+  - auth.docker.io:443
+  - index.docker.io:443
   # Security tools
   - osv-vulnerabilities.storage.googleapis.com:443
   - api.osv.dev:443

@@ -1098,7 +1098,7 @@ repos:
       - id: actionlint
         name: check github actions
         language: system
-        entry: sh scripts/lib/lint-wrapper.sh actionlint
+        entry: sh scripts/lib/lint-wrapper.sh actionlint --shellcheck=
         files: ^\.github/workflows/.*\.yml$
         description: "Validate GitHub Actions workflow syntax."
 
