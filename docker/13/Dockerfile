@@ -7,7 +7,7 @@
 #   - Native support for PUID/PGID user mapping.
 #   - Pre-installed with essential dev/ops tooling (Git, Curl, Sudo, etc.).
 
-FROM debian:13.4-slim
+FROM debian:13.5-slim
 
 # Build-time Configuration
 ARG BUILDTIME \
