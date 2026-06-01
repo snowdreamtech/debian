@@ -110,7 +110,7 @@ jobs:
 
       - name: "🔒 Harden Runner (Security Egress Audit)"
         if: steps.version-filter.outputs.skip != 'true'
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -193,7 +193,7 @@ jobs:
 
       - name: "🛠️ Configure Docker Buildx"
         if: steps.version-filter.outputs.skip != 'true'
-        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v3.12.0
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v3.12.0
         with:
           buildkitd-config: .github/buildkitd.toml
 
@@ -201,7 +201,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-dockerhub
         continue-on-error: true
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v3.7.0
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -210,7 +210,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-quay
         continue-on-error: true
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v3.7.0
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
@@ -220,7 +220,7 @@ jobs:
         if: steps.version-filter.outputs.skip != 'true'
         id: login-ghcr
         continue-on-error: true
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v3.7.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -244,7 +244,7 @@ jobs:
       - name: "🏷️ Generate Docker Metadata"
         if: steps.version-filter.outputs.skip != 'true'
         id: meta
-        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
         with:
           images: |
             name=snowdreamtech/debian,enable=true
@@ -292,7 +292,7 @@ jobs:
           steps.version-filter.outputs.skip != 'true' &&
           ((github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')) ||
           (startsWith(github.ref, format('refs/tags/{0}-', matrix.version))))
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: docker/${{ matrix.version }}
           build-args: |
@@ -520,7 +520,7 @@ jobs:
       - name: "📤 Upload Image Security Scan (SARIF)"
         if: steps.version-filter.outputs.skip != 'true' && steps.build.conclusion == 'success' && steps.trivy.outcome == 'success'
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
         with:
           sarif_file: "trivy-image-${{ matrix.version }}.sarif"
           category: "trivy-image-debian-${{ matrix.version }}"
