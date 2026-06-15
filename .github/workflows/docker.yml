@@ -114,6 +114,8 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
+                      auth.docker.io:443
+                      registry-1.docker.io:443
             api.github.com:443
             *.githubusercontent.com:443
             github.com:443
