@@ -52,6 +52,18 @@ ENV KEEPALIVE=${KEEPALIVE} \
 
 # Infrastructure & Tooling Setup
 # Includes standard repositories and essential system packages.
+
+# Enable contrib, non-free and non-free-firmware for standard repositories
+RUN sed -i 's/Components: main$/Components: main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
+
+# Enable Debian Backports
+RUN printf "%s\n" \
+"Types: deb deb-src" \
+"URIs: http://deb.debian.org/debian" \
+"Suites: trixie-backports" \
+"Components: main contrib non-free non-free-firmware" \
+"Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg" \
+> /etc/apt/sources.list.d/backports.sources
 RUN set -eux \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -88,6 +100,14 @@ RUN set -eux \
     lsof \
     apt-transport-https \
     ca-certificates \
+    fasttrack-archive-keyring \
+    && printf "%s\n" \
+    "Types: deb deb-src" \
+    "URIs: https://fasttrack.debian.net/debian-fasttrack/" \
+    "Suites: trixie-fasttrack trixie-backports-fasttrack" \
+    "Components: main contrib non-free non-free-firmware" \
+    "Signed-By: /usr/share/keyrings/fasttrack-archive-keyring.gpg" \
+    > /etc/apt/sources.list.d/fasttrack.sources \
     && update-ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
