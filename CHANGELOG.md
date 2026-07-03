@@ -6,6 +6,67 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.4](https://github.com/snowdreamtech/template/compare/v0.15.3...v0.15.4) (2026-06-30)
+
+
+### 🚀 Features
+
+* add support for riscv64, ppc64le, loong64, and s390x architectures in install script ([26d48f0](https://github.com/snowdreamtech/template/commit/26d48f019620413782b0348cedc3c320412e29e4))
+
+
+### ♻️ Miscellaneous Chores
+
+* upgrade actions/checkout to v7.0.0 in goreleaser workflow ([1330789](https://github.com/snowdreamtech/template/commit/1330789b6d769879e5475a835006af8e6bb52251))
+
+## [0.15.3](https://github.com/snowdreamtech/template/compare/v0.15.2...v0.15.3) (2026-06-28)
+
+
+### ♻️ Miscellaneous Chores
+
+* **deps:** bump unirtm version to 0.25.3 ([49f7888](https://github.com/snowdreamtech/template/commit/49f788808736ba4e1d2902e1911192ad1ad77ede))
+* **deps:** regenerate unirtm.lock with v0.25.0 format ([9227ed1](https://github.com/snowdreamtech/template/commit/9227ed1faa7f52f24dea36a7de6c458d22620f9e))
+* **deps:** sync dependabot config and unirtm toolchain ([b70d42e](https://github.com/snowdreamtech/template/commit/b70d42ee1c936de486631a5579fce9c88075185a))
+* **deps:** sync dependabot config and unirtm toolchain ([2de6141](https://github.com/snowdreamtech/template/commit/2de614154fc5abf1b011618a96bd21161e0f846c))
+* regenerate unirtm.lock with algorithm prefix ([de2b74b](https://github.com/snowdreamtech/template/commit/de2b74b0d0efbad5fa742a7324331504895e1c73))
+* remove unirtm.lock ([2da4f50](https://github.com/snowdreamtech/template/commit/2da4f50852d8a6b97f334b1c533dffaa08394cb5))
+
+## [0.15.2](https://github.com/snowdreamtech/template/compare/v0.15.1...v0.15.2) (2026-06-20)
+
+
+### 🐛 Bug Fixes
+
+* **cd:** delete remote tag before re-push to trigger downstream docker build ([be75906](https://github.com/snowdreamtech/template/commit/be759064255c0e8f8e24f45efb260d5a26466c2a))
+* **cd:** disable persist-credentials to ensure WORKFLOW_SECRET PAT is used for tag push ([bedf7bf](https://github.com/snowdreamtech/template/commit/bedf7bf3bdabc083f6fd60d69d99dd2d482ea0ee))
+
+
+### ♻️ Miscellaneous Chores
+
+* release main ([76bafd6](https://github.com/snowdreamtech/template/commit/76bafd6d4eecbe14ec4b7fbe707280b4b4db9c07))
+* **release:** deduplicate CHANGELOG headers ([639b069](https://github.com/snowdreamtech/template/commit/639b0695d7325f2d2a827301a2f3a41111fcab6d))
+
+## [0.15.1](https://github.com/snowdreamtech/template/compare/v0.15.0...v0.15.1) (2026-06-19)
+
+
+### 🚀 Features
+
+* **cd:** sync release orchestration enhancements from base repo ([b00fee8](https://github.com/snowdreamtech/template/commit/b00fee866cebcb89c24604a96bdfcd8816c60467))
+
+
+### ♻️ Miscellaneous Chores
+
+* **release:** configure root package in config ([6d6254d](https://github.com/snowdreamtech/template/commit/6d6254dbe4df6d791e5f045ebab89def451bf089))
+* **release:** update packages to use docker prefix and add rocky support ([81f21b2](https://github.com/snowdreamtech/template/commit/81f21b2115a96934213a15e66d6937560aabaa62))
+
+## [0.15.0](https://github.com/snowdreamtech/template/compare/v0.14.0...v0.15.0) (2026-06-16)
+
+
+### Features
+
+* **devcontainer:** add volume cache for osv-scanner ([95891da](https://github.com/snowdreamtech/template/commit/95891daa85b4e4759ce3fe748d6107894a8f8cac))
+* **devcontainer:** add volume cache for trivy ([9f931a1](https://github.com/snowdreamtech/template/commit/9f931a1d4e63544dbc34dbb795635990587f86e9))
+* **devcontainer:** add vscode extension customizations for auto-installation ([efae646](https://github.com/snowdreamtech/template/commit/efae64695c1208107298d792e272f05128405b6d))
+* **devcontainer:** forward common development and web ports ([35ff5f6](https://github.com/snowdreamtech/template/commit/35ff5f6256f3f2e88ccce449121826eac48fdc2b))
+
 ## [0.14.0](https://github.com/snowdreamtech/template/compare/v0.13.1...v0.14.0) (2026-06-13)
 
 
@@ -22,13 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Miscellaneous Chores
 
 * **docs:** explicitly add esbuild and vite to devDependencies for tracking ([ea50d16](https://github.com/snowdreamtech/template/commit/ea50d166a8f149e4892180ffb28f0259a7a95367))
-
-## [0.14.0](https://github.com/snowdreamtech/template/compare/v0.13.1...v0.14.0) (2026-06-13)
-
-
-### Features
-
-* add UNIRTM_HOOK_ALLOW_MISSING=1 to .unirtm.toml ([a1ceab9](https://github.com/snowdreamtech/template/commit/a1ceab9944841fe017617af3d39a777358ac2a1c))
 
 ## [0.13.1](https://github.com/snowdreamtech/template/compare/v0.13.0...v0.13.1) (2026-04-29)
 
@@ -478,25 +532,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **security:** add docker.yml to zizmor ignore rules ([66e35cf](https://github.com/snowdreamtech/template/commit/66e35cf2e63c97fc8b1ecbad2a13e283a16031c7))
 * **security:** add template-injection rule to zizmor config ([92396c1](https://github.com/snowdreamtech/template/commit/92396c15000fed537d3f4057f41dddd3bd7fe69b))
 
-## [0.7.0](https://github.com/snowdreamtech/template/compare/v0.6.1...v0.7.0) (2026-04-18)
-
-
-### Features
-
-* **ci:** add centralized Harden Runner endpoints configuration ([5389a6e](https://github.com/snowdreamtech/template/commit/5389a6eb811a6b1ecfeefd6a0a3512e9a7d8b078))
-* **ci:** sync Harden Runner endpoints from centralized config ([48b4221](https://github.com/snowdreamtech/template/commit/48b42213ee409890c4dd9a64f230c251dbac7b77))
-* **docker:** add docker-compose file detection for hadolint and dockerfile-utils ([836880d](https://github.com/snowdreamtech/template/commit/836880de8c86ea0e548ed9edabe589d38357903f))
-* **make:** add sync-harden-runner target for workflow endpoint management ([d24708d](https://github.com/snowdreamtech/template/commit/d24708dd86bb09946f3337dfd0747ca5fbcd51bc))
-
-
-### Bug Fixes
-
-* **ci:** add missing endpoints for trivy and sigstore ([115a19d](https://github.com/snowdreamtech/template/commit/115a19de02c7cd1d274ecb0191bd035a02d273ef))
-* **ci:** restrict release-please to main branch only ([0db8a91](https://github.com/snowdreamtech/template/commit/0db8a910c4bbba1426944ccfcca648a593bb097e))
-* **scripts:** ensure summary table displays by default ([a0d1b69](https://github.com/snowdreamtech/template/commit/a0d1b69300d151b2f448a2f1375e0f81e97cd6b2))
-* **scripts:** install PyYAML via pip instead of pipx in sync-harden-runner ([16285a8](https://github.com/snowdreamtech/template/commit/16285a8ec6f27dada410103a3118482e38b82875))
-* **scripts:** prevent sync-harden-runner from deleting workflow content ([32a4228](https://github.com/snowdreamtech/template/commit/32a4228e6e456a62cf761590491c5c56b6b24b8b))
-
 ## [0.6.1](https://github.com/snowdreamtech/template/compare/v0.6.0...v0.6.1) (2026-04-17)
 
 
@@ -577,26 +612,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **dependabot:** add path monitoring for mise toolchain config ([ebc7227](https://github.com/snowdreamtech/template/commit/ebc72273a85cb32f3e66b84305c726e47ce55b63))
 * **deps:** remove MISE_SKIP_CHECKSUM workaround ([0a80645](https://github.com/snowdreamtech/template/commit/0a8064500cc0ecef8851af4aea31023f5809512e))
 
-## [0.4.0](https://github.com/snowdreamtech/template/compare/v0.4.0...v0.4.0) (2026-04-16)
-
-
-### Bug Fixes
-
-* **mise:** workaround for GitHub attestation verification failures ([2911054](https://github.com/snowdreamtech/template/commit/29110547a86ebe51593eac637c0b4dc4c14977bc))
-
-
-### Documentation
-
-* **security:** add comprehensive asdf supply chain risk analysis ([515eea1](https://github.com/snowdreamtech/template/commit/515eea10cedc50f05f0cecd3f421129e1ce59cd4))
-
-## [0.4.0](https://github.com/snowdreamtech/template/compare/v0.3.0...v0.4.0) (2026-04-15)
-
-
-### Bug Fixes
-
-* **ci:** temporarily disable npm-pnpm-audit hook due to API compatibility ([6ed58d9](https://github.com/snowdreamtech/template/commit/6ed58d92ebd50ff746dfe5f1d630f59cc7eb4441))
-* **ci:** use npm instead of pnpm for audit to avoid API compatibility issues ([641c9f7](https://github.com/snowdreamtech/template/commit/641c9f744927c5aa15369cd56bcb7e31bb44bf3d))
-
 ## [0.3.0](https://github.com/snowdreamtech/template/compare/v0.2.0...v0.3.0) (2026-04-15)
 
 
@@ -668,20 +683,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Miscellaneous Chores
 
 * **main:** release 0.0.4 ([50f54df](https://github.com/snowdreamtech/template/commit/50f54df242ad2f1b3eb9af763359692728e38200))
-
-## [0.0.4](https://github.com/snowdreamtech/template/compare/v0.0.3...v0.0.4) (2026-04-12)
-
-
-### Bug Fixes
-
-* **python:** install build dependencies for Alpine/musl environments ([3f53883](https://github.com/snowdreamtech/template/commit/3f53883e79ed5b9d74ca2369052b0014a3d4f0fc))
-
-## [0.0.4](https://github.com/snowdreamtech/template/compare/v0.0.3...v0.0.4) (2026-04-12)
-
-
-### Bug Fixes
-
-* **python:** install build dependencies for Alpine/musl environments ([3f53883](https://github.com/snowdreamtech/template/commit/3f53883e79ed5b9d74ca2369052b0014a3d4f0fc))
 
 ## [0.0.3](https://github.com/snowdreamtech/template/compare/v0.0.2...v0.0.3) (2026-04-12)
 
