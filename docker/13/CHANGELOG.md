@@ -5,6 +5,13 @@ All notable changes to the Debian 13 Docker image will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [13.6.0](https://github.com/snowdreamtech/debian/compare/13-v13.5.0...13-v13.6.0) (2026-07-03)
+
+
+### 🚀 Features
+
+* enable non-free components and Debian Fast Track for production ([6fd7e1a](https://github.com/snowdreamtech/debian/commit/6fd7e1aa1d660b0f2cca0182a5bf471c891ad227))
+
 ## [13.5.0](https://github.com/snowdreamtech/debian/compare/13-v13.4.0...13-v13.5.0) (2026-06-14)
 
 
