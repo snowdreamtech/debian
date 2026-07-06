@@ -5,7 +5,9 @@
       "release-type": "simple",
       "component": "12",
       "include-component-in-tag": true,
+      "release-as": "12.15.0",
       "changelog-path": "CHANGELOG.md",
+      "exclude-paths": ["docker/12/CHANGELOG.md"],
       "extra-files": [
         {
           "type": "generic",
@@ -18,7 +20,9 @@
       "release-type": "simple",
       "component": "13",
       "include-component-in-tag": true,
+      "release-as": "13.6.0",
       "changelog-path": "CHANGELOG.md",
+      "exclude-paths": ["docker/13/CHANGELOG.md"],
       "extra-files": [
         {
           "type": "generic",
