@@ -27,7 +27,7 @@
 | 版本 | 代号 | 基础镜像 | Docker 标签 | 状态 |
 |------|------|----------|-------------|------|
 | 13 | Trixie | debian:13.4-slim | `latest`, `13-latest`, `13-v13.4.0` | ✅ 活跃 |
-| 12 | Bookworm | debian:12.13-slim | `12-latest`, `12-v12.13.0` | ✅ 活跃 |
+| 12 | Bookworm | debian:12.15-slim | `12-latest`, `12-v12.15.0` | ✅ 活跃 |
 
 ## 🚀 快速开始
 
@@ -43,7 +43,7 @@ docker pull snowdreamtech/debian:13-v13.4.0
 
 # Debian 12（Bookworm）
 docker pull snowdreamtech/debian:12-latest
-docker pull snowdreamtech/debian:12-v12.13.0
+docker pull snowdreamtech/debian:12-v12.15.0
 ```
 
 ### 从 GitHub Container Registry 拉取
@@ -58,7 +58,7 @@ docker pull ghcr.io/snowdreamtech/debian:13-v13.4.0
 
 # Debian 12（Bookworm）
 docker pull ghcr.io/snowdreamtech/debian:12-latest
-docker pull ghcr.io/snowdreamtech/debian:12-v12.13.0
+docker pull ghcr.io/snowdreamtech/debian:12-v12.15.0
 ```
 
 ### 基本用法

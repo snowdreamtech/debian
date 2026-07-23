@@ -6,7 +6,7 @@ This directory contains Docker configurations for multiple Debian versions.
 
 | Version | Codename | Base Image | Tag Format |
 |---------|----------|------------|------------|
-| 12 | Bookworm | debian:12.13-slim | 12-v12.13.0, 12-latest |
+| 12 | Bookworm | debian:12.15-slim | 12-v12.15.0, 12-latest |
 | 13 | Trixie | debian:13.4-slim | 13-v13.4.0, 13-latest, latest |
 
 ## Directory Structure
@@ -66,7 +66,7 @@ docker pull snowdreamtech/debian:13-v13.4.0
 
 # Debian 12
 docker pull snowdreamtech/debian:12-latest
-docker pull snowdreamtech/debian:12-v12.13.0
+docker pull snowdreamtech/debian:12-v12.15.0
 ```
 
 ### Pull from GitHub Container Registry
@@ -79,7 +79,7 @@ docker pull ghcr.io/snowdreamtech/debian:13-v13.4.0
 
 # Debian 12
 docker pull ghcr.io/snowdreamtech/debian:12-latest
-docker pull ghcr.io/snowdreamtech/debian:12-v12.13.0
+docker pull ghcr.io/snowdreamtech/debian:12-v12.15.0
 ```
 
 ### Run Container
