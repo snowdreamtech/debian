@@ -26,7 +26,7 @@ Enterprise-grade Docker base images for Debian with comprehensive multi-architec
 
 | Version | Codename | Base Image | Docker Tags | Status |
 |---------|----------|------------|-------------|--------|
-| 13 | Trixie | debian:13.4-slim | `latest`, `13-latest`, `13-v13.4.0` | ✅ Active |
+| 13 | Trixie | debian:13.6-slim | `latest`, `13-latest`, `13-v13.6.0` | ✅ Active |
 | 12 | Bookworm | debian:12.15-slim | `12-latest`, `12-v12.15.0` | ✅ Active |
 
 ## 🚀 Quick Start
@@ -39,7 +39,7 @@ docker pull snowdreamtech/debian:latest
 
 # Debian 13 (Trixie)
 docker pull snowdreamtech/debian:13-latest
-docker pull snowdreamtech/debian:13-v13.4.0
+docker pull snowdreamtech/debian:13-v13.6.0
 
 # Debian 12 (Bookworm)
 docker pull snowdreamtech/debian:12-latest
@@ -54,7 +54,7 @@ docker pull ghcr.io/snowdreamtech/debian:latest
 
 # Debian 13 (Trixie)
 docker pull ghcr.io/snowdreamtech/debian:13-latest
-docker pull ghcr.io/snowdreamtech/debian:13-v13.4.0
+docker pull ghcr.io/snowdreamtech/debian:13-v13.6.0
 
 # Debian 12 (Bookworm)
 docker pull ghcr.io/snowdreamtech/debian:12-latest
