@@ -5,6 +5,13 @@ All notable changes to the Debian 13 Docker image will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [13.6.0](https://github.com/snowdreamtech/debian/compare/13-v13.6.0...13-v13.6.0) (2026-07-24)
+
+
+### 🐛 Bug Fixes
+
+* **docker:** remove fasttrack repository to improve compatibility ([c2468bd](https://github.com/snowdreamtech/debian/commit/c2468bd2b9fff90a894c954e3952e998f5b3fc1d))
+
 ## [13.6.0](https://github.com/snowdreamtech/debian/compare/13-v13.5.0...13-v13.6.0) (2026-07-03)
 
 
