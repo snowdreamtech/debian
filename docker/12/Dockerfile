@@ -100,14 +100,6 @@ RUN set -eux \
     lsof \
     apt-transport-https \
     ca-certificates \
-    fasttrack-archive-keyring \
-    && printf "%s\n" \
-    "Types: deb deb-src" \
-    "URIs: https://fasttrack.debian.net/debian-fasttrack/" \
-    "Suites: bookworm-fasttrack bookworm-backports-fasttrack" \
-    "Components: main contrib non-free non-free-firmware" \
-    "Signed-By: /usr/share/keyrings/fasttrack-archive-keyring.gpg" \
-    > /etc/apt/sources.list.d/fasttrack.sources \
     && update-ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
