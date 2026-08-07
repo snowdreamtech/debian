@@ -5,6 +5,13 @@ All notable changes to the Debian 13 Docker image will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [13.6.0](https://github.com/snowdreamtech/debian/compare/13-v13.6.0...13-v13.6.0) (2026-08-07)
+
+
+### ♻️ Miscellaneous Chores
+
+* align debian 12 and 13 build matrices with upstream supported architectures ([356acba](https://github.com/snowdreamtech/debian/commit/356acba69ab9534e2fea2d59b5d6be6b125fbdff))
+
 ## [13.6.0](https://github.com/snowdreamtech/debian/compare/13-v13.6.0...13-v13.6.0) (2026-07-24)
 
 
