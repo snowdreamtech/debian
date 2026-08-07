@@ -33,7 +33,7 @@ docker/
 
 ## Features
 
-- **Multi-architecture support**: amd64, arm64, arm/v7, arm/v5, i386, ppc64le, s390x, riscv64
+- **Multi-architecture support**: amd64, arm64, arm/v7, i386, ppc64le, s390x, riscv64
 - **Minimal base**: Uses slim variants for smaller image size
 - **User management**: Support for custom PUID/PGID
 - **Configurable**: Environment variables for customization

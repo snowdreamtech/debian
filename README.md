@@ -14,7 +14,7 @@ Enterprise-grade Docker base images for Debian with comprehensive multi-architec
 
 ## 🌟 Features
 
-- **Multi-Architecture Support**: Native support for 8 architectures (amd64, arm64, arm/v7, arm/v5, i386, ppc64le, s390x, riscv64)
+- **Multi-Architecture Support**: Native support for 7 architectures (amd64, arm64, arm/v7, i386, ppc64le, s390x, riscv64)
 - **Multiple Debian Versions**: Debian 12 (Bookworm) and Debian 13 (Trixie)
 - **Minimal Base**: Built on official slim variants for smaller image sizes
 - **Production Ready**: Pre-configured with essential tools and security hardening
@@ -95,7 +95,6 @@ docker run -it \
 | linux/amd64 | ✅ Supported | x86-64 |
 | linux/arm64 | ✅ Supported | ARM 64-bit |
 | linux/arm/v7 | ✅ Supported | ARM 32-bit v7 |
-| linux/arm/v5 | ✅ Supported | ARM 32-bit v5 |
 | linux/386 | ✅ Supported | x86 32-bit |
 | linux/ppc64le | ✅ Supported | PowerPC 64-bit LE |
 | linux/s390x | ✅ Supported | IBM System z |
@@ -208,7 +207,7 @@ docker buildx build \
 
 # Build all platforms (requires buildx)
 docker buildx build \
-  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v5,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
+  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
   -t debian:13-multi \
   docker/13/
 ```

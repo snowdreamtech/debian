@@ -14,7 +14,7 @@
 
 ## 🌟 特性
 
-- **多架构支持**：原生支持 8 种架构（amd64、arm64、arm/v7、arm/v5、i386、ppc64le、s390x、riscv64）
+- **多架构支持**：原生支持 7 种架构（amd64、arm64、arm/v7、i386、ppc64le、s390x、riscv64）
 - **多个 Debian 版本**：Debian 12（Bookworm）和 Debian 13（Trixie）
 - **最小化基础镜像**：基于官方 slim 变体构建，镜像体积更小
 - **生产就绪**：预配置了必要工具和安全加固
@@ -95,9 +95,8 @@ docker run -it \
 | linux/amd64 | ✅ 支持 | x86-64 |
 | linux/arm64 | ✅ 支持 | ARM 64 位 |
 | linux/arm/v7 | ✅ 支持 | ARM 32 位 v7 |
-| linux/arm/v5 | ✅ 支持 | ARM 32 位 v5 |
 | linux/386 | ✅ 支持 | x86 32 位 |
-| linux/ppc64le | ✅ 支持 | PowerPC 64 位 LE |
+| linux/ppc64le | ✅ 支持 | PowerPC 64 位小端 |
 | linux/s390x | ✅ 支持 | IBM System z |
 | linux/riscv64 | ✅ 支持 | RISC-V 64 位 |
 
@@ -208,7 +207,7 @@ docker buildx build \
 
 # 构建所有平台（需要 buildx）
 docker buildx build \
-  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v5,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
+  --platform linux/amd64,linux/arm64,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x,linux/riscv64 \
   -t debian:13-multi \
   docker/13/
 ```
