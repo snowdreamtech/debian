@@ -12,13 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * align debian 12 and 13 build matrices with upstream supported architectures ([356acba](https://github.com/snowdreamtech/debian/commit/356acba69ab9534e2fea2d59b5d6be6b125fbdff))
 
-## [12.15.0](https://github.com/snowdreamtech/debian/compare/12-v12.15.0...12-v12.15.0) (2026-07-24)
-
-
-### 🐛 Bug Fixes
-
-* **docker:** remove fasttrack repository to improve compatibility ([c2468bd](https://github.com/snowdreamtech/debian/commit/c2468bd2b9fff90a894c954e3952e998f5b3fc1d))
-
 ## [12.14.0](https://github.com/snowdreamtech/debian/compare/12-v12.13.0...12-v12.14.0) (2026-06-14)
 
 
