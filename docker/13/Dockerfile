@@ -27,7 +27,7 @@ ARG BUILDTIME \
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.title="Debian Base Image" \
-    org.opencontainers.image.description="Professional Docker Image packaging for Debian Linux. Supports amd64, arm32v5, arm32v7, arm64, i386, ppc64le, riscv64, s390x." \
+    org.opencontainers.image.description="Professional Docker Image packaging for Debian Linux. Supports amd64, arm32v7, arm64, ppc64le, riscv64, s390x." \
     org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/debian" \
     org.opencontainers.image.base.name="snowdreamtech/debian:latest" \
     org.opencontainers.image.licenses="MIT" \
