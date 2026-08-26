@@ -1,6 +1,6 @@
 ---
 # Continuous Delivery (Multi-Platform Docker Build)
-# Purpose: Builds and pushes multi-platform Docker images to DockerHub, Quay.io, and GHCR.
+# Purpose: Builds and pushes multi-platform Docker images to DockerHub and GHCR.
 # Trigger: Pushes to core branches, release tags, daily schedule, and manual dispatch.
 # Permissions:
 #   - contents: read (Required for repository checkout).
@@ -393,7 +393,7 @@ jobs:
                 echo "  ✗ GHCR image pull failed after retries"
               fi
             fi
-          fi          fi
+          fi
 
           echo "✓ Registry verification completed"
 
