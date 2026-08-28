@@ -13,13 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **entrypoint:** unify default non-root username to appuser and restore flat script structure ([33a687f](https://github.com/snowdreamtech/debian/commit/33a687ffe55fe72598845e73685a3bbe4c09b500))
 * **entrypoint:** wrap user setup in function and default username for non-root PUID ([d2ec26f](https://github.com/snowdreamtech/debian/commit/d2ec26f139757a43b9b8d6d38b418581d2bfca94))
 
-## [12.15.0](https://github.com/snowdreamtech/debian/compare/12-v12.15.0...12-v12.15.0) (2026-08-07)
-
-
-### ♻️ Miscellaneous Chores
-
-* align debian 12 and 13 build matrices with upstream supported architectures ([356acba](https://github.com/snowdreamtech/debian/commit/356acba69ab9534e2fea2d59b5d6be6b125fbdff))
-
 ## [12.14.0](https://github.com/snowdreamtech/debian/compare/12-v12.13.0...12-v12.14.0) (2026-06-14)
 
 
