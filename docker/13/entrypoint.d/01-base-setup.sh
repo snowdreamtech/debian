@@ -6,6 +6,12 @@
 
 set -e
 
+setup_base_environment() {
+  # Default USER to snowdream if PUID/PGID are specified and USER is root or unset
+  if [ "${PUID:-0}" -ne 0 ] && [ "${USER:-root}" = "root" ]; then
+    USER="snowdream"
+  fi
+
 # Create a user with PUID and PGID if specified and doesn't exist
 if [ "$(id -u)" = "0" ]; then
   if [ "${USER}" != "root" ] && [ "${PUID:-0}" -ne 0 ] && [ "${PGID:-0}" -ne 0 ]; then
@@ -78,3 +84,6 @@ if [ "$DEBUG" = "true" ]; then
   echo "→ [EXTENSION] Applying system umask: ${UMASK}"
 fi
 umask "${UMASK}"
+}
+
+setup_base_environment "$@"
