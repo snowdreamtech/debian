@@ -48,18 +48,14 @@
       "type": "shell",
       "command": "cargo build",
       "group": "build",
-      "problemMatcher": [
-        "$rustc"
-      ]
+      "problemMatcher": ["$rustc"]
     },
     {
       "label": "🐹 go: build",
       "type": "shell",
       "command": "go build ./...",
       "group": "build",
-      "problemMatcher": [
-        "$go"
-      ]
+      "problemMatcher": ["$go"]
     },
     {
       "label": "☕ java: javac",
@@ -73,9 +69,7 @@
       "type": "shell",
       "command": "dotnet build",
       "group": "build",
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": ["$msCompile"]
     }
   ]
 }

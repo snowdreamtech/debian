@@ -1,32 +1,35 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "packages": {
-    "docker/alpine": {
+    "docker/12": {
       "release-type": "simple",
-      "component": "alpine",
+      "component": "12",
       "include-component-in-tag": true,
-      "release-as": "3.24.1",
+      "release-as": "12.15.0",
       "changelog-path": "CHANGELOG.md",
-      "exclude-paths": ["docker/alpine/CHANGELOG.md"],
-      "extra-files": ["docker/alpine/Dockerfile", ".github/workflows/docker.yml"]
+      "exclude-paths": ["docker/12/CHANGELOG.md"],
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "Dockerfile",
+          "glob": false
+        }
+      ]
     },
-    "docker/debian": {
+    "docker/13": {
       "release-type": "simple",
-      "component": "debian",
+      "component": "13",
       "include-component-in-tag": true,
       "release-as": "13.6.0",
       "changelog-path": "CHANGELOG.md",
-      "exclude-paths": ["docker/debian/CHANGELOG.md"],
-      "extra-files": ["docker/debian/Dockerfile", ".github/workflows/docker.yml"]
-    },
-    "docker/rocky": {
-      "release-type": "simple",
-      "component": "rocky",
-      "include-component-in-tag": true,
-      "release-as": "10.2.0",
-      "changelog-path": "CHANGELOG.md",
-      "exclude-paths": ["docker/rocky/CHANGELOG.md"],
-      "extra-files": ["docker/rocky/Dockerfile", ".github/workflows/docker.yml"]
+      "exclude-paths": ["docker/13/CHANGELOG.md"],
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "Dockerfile",
+          "glob": false
+        }
+      ]
     }
   },
   "include-v-in-tag": true,

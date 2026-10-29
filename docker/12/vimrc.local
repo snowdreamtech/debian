@@ -1,0 +1,44 @@
+set number    " Show line numbers
+set hlsearch    " Highlight search matches
+set autoindent    " Enable auto-indentation
+set showmode    " Show current mode in status line
+syntax on    " Enable syntax highlighting
+set nocompatible    " Disable vi compatibility mode
+set textwidth=80    " Set line width to 80 characters (0 disables auto-wrap)
+set noswapfile    " Disable swap files to reduce conflicts
+set nobackup    " Disable backup files to reduce conflicts
+set nowritebackup    " Disable write backup to reduce conflicts
+set history=1000    " Set command history length
+set tabstop=4    " Set tab width to 4 spaces
+set shiftwidth=2    " Set auto-indent width to 2 spaces
+set showcmd    " Show command in status line
+set showmatch    " Show matching brackets
+set ignorecase    " Ignore case in search patterns
+set smartcase    " Override ignorecase if search pattern contains uppercase
+set incsearch    " Show incremental search matches
+set nolist    " Don't display invisible characters
+if has('mouse')
+  set mouse-=a
+endif    " Enable mouse support with copy/paste capability
+set wrap    " Enable line wrapping
+set linebreak    " Break lines at word boundaries
+set wrapmargin=2    " Set margin between wrap point and window edge
+set scrolloff=5    " Keep 5 lines visible above/below cursor when scrolling
+set sidescrolloff=15    " Keep 15 characters visible left/right of cursor
+set laststatus=2    " Always show status line (0=never, 1=multi-window, 2=always)
+set ruler    " Show cursor position in status line
+set expandtab    " Use spaces instead of tabs
+set softtabstop=4    " Number of spaces per tab
+set cursorline    " Highlight current line
+set cursorcolumn    " Highlight current column
+set fileencodings=ucs-bom,utf-8,gbk,gb2312,cp936,gb18030,big5,latin-1    " File encoding detection order
+set encoding=utf-8    " Set internal encoding to UTF-8
+set termencoding=utf-8    " Set terminal encoding to UTF-8
+set fileencoding=utf-8    " Set default file encoding to UTF-8
+set autochdir    " Auto change working directory to current file's directory
+set visualbell    " Use visual bell instead of beeping
+set autoread    " Auto reload file when changed externally
+set autowrite    " Auto save before executing external commands
+set wildmenu    " Enable command-line completion menu
+set wildmode=longest:list,full    " Command-line completion mode
+hi Normal ctermfg=NONE ctermbg=NONE    " Transparent background

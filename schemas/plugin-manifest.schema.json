@@ -41,7 +41,14 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["string", "integer", "number", "boolean", "array", "object"],
+                "enum": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "array",
+                  "object"
+                ],
                 "description": "Data type expected for this configuration setting"
               },
               "description": {

@@ -7,9 +7,7 @@
       "type": "node",
       "request": "launch",
       "program": "${file}",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     // === Python ===
     {
@@ -91,10 +89,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev"
-      ],
+      "runtimeArgs": ["run", "dev"],
       "serverReadyAction": {
         "pattern": "local: (http://localhost:[0-9]+)",
         "uriFormat": "%s",
@@ -107,10 +102,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev"
-      ],
+      "runtimeArgs": ["run", "dev"],
       "serverReadyAction": {
         "pattern": "local: (http://localhost:[0-9]+)",
         "uriFormat": "%s",

@@ -135,7 +135,11 @@
       "type": "object",
       "description": "Environment variables injected into subshells and tasks. Supports Jinja2/Pongo2 templating.",
       "additionalProperties": {
-        "oneOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }]
+        "oneOf": [
+          { "type": "string" },
+          { "type": "number" },
+          { "type": "boolean" }
+        ]
       }
     },
     "tasks": {

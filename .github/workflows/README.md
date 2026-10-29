@@ -66,10 +66,10 @@ graph TD
 
 ### Configuration Reference
 
-| Parameter | Type    | Default | Description                                            |
-| :-------- | :------ | :------ | :----------------------------------------------------- |
-| `venv`    | String  | `.venv` | Path to the Python virtual environment.                |
-| `npm`     | Boolean | `true`  | Whether to use npm for Node.js dependency management.  |
+| Parameter | Type    | Default | Description                                           |
+| :-------- | :------ | :------ | :---------------------------------------------------- |
+| `venv`    | String  | `.venv` | Path to the Python virtual environment.               |
+| `npm`     | Boolean | `true`  | Whether to use npm for Node.js dependency management. |
 
 ### Workflow Patterns
 

@@ -33,7 +33,7 @@ updates:
       - "infrastructure"
 
   - package-ecosystem: "docker"
-    directory: "/docker/alpine"
+    directory: "/docker/12"
     target-branch: "dev"
     open-pull-requests-limit: 5
     rebase-strategy: "auto"
@@ -62,36 +62,7 @@ updates:
           - "version-update:semver-major"
 
   - package-ecosystem: "docker"
-    directory: "/docker/debian"
-    target-branch: "dev"
-    open-pull-requests-limit: 5
-    rebase-strategy: "auto"
-    groups:
-      all-dependencies:
-        patterns: ["*"]
-        update-types:
-          - "patch"
-          - "minor"
-          - "major"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: "build(deps):"
-    labels:
-      - "dependencies"
-      - "docker"
-      - "infrastructure"
-    ignore:
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-major"
-
-  - package-ecosystem: "docker"
-    directory: "/docker/rocky"
+    directory: "/docker/13"
     target-branch: "dev"
     open-pull-requests-limit: 5
     rebase-strategy: "auto"
