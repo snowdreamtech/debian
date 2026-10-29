@@ -44,17 +44,17 @@ tags:
 
 ```json
 {
-  "docker/13": "13.6.0"
+  "docker/13": "13.7.0"
 }
 ```
 
 **When you merge a Release-Please PR:**
 
-- Release-Please creates tag: `13-v13.6.0`
+- Release-Please creates tag: `13-v13.7.0`
 - Docker workflow triggers: ✅ YES (matches `13-v*`)
 - Matrix job runs: Debian 13 only
 - Generated Docker tags:
-  - `snowdreamtech/debian:13-v13.6.0`
+  - `snowdreamtech/debian:13-v13.7.0`
   - `snowdreamtech/debian:13-latest`
   - `snowdreamtech/debian:latest` (since 13 is `is_latest: true`)
   - `snowdreamtech/debian:trixie`

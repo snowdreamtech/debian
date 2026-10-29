@@ -18,7 +18,7 @@ Debian Linux 的 Docker 基础镜像。支持多平台架构：(amd64, arm32v7, 
 
 | 版本 | 代号     | 基础镜像          | Docker 标签                                                    | 状态      |
 | :--- | :------- | :---------------- | :------------------------------------------------------------- | :-------- |
-| 13   | Trixie   | debian:13.6-slim  | `latest`, `13-latest`, `13-v13.6.0`, `trixie`, `trixie-latest` | ✅ Active |
+| 13   | Trixie   | debian:13.7-slim  | `latest`, `13-latest`, `13-v13.7.0`, `trixie`, `trixie-latest` | ✅ Active |
 | 12   | Bookworm | debian:12.15-slim | `12-latest`, `12-v12.15.0`, `bookworm`, `bookworm-latest`      | ✅ Active |
 
 ## 使用方法

@@ -18,7 +18,7 @@ Docker Image packaging for Debian Linux. (amd64, arm32v7, arm64, i386, ppc64le, 
 
 | Version | Codename | Base Image        | Docker Tags                                                    | Status    |
 | :------ | :------- | :---------------- | :------------------------------------------------------------- | :-------- |
-| 13      | Trixie   | debian:13.6-slim  | `latest`, `13-latest`, `13-v13.6.0`, `trixie`, `trixie-latest` | ✅ Active |
+| 13      | Trixie   | debian:13.7-slim  | `latest`, `13-latest`, `13-v13.7.0`, `trixie`, `trixie-latest` | ✅ Active |
 | 12      | Bookworm | debian:12.15-slim | `12-latest`, `12-v12.15.0`, `bookworm`, `bookworm-latest`      | ✅ Active |
 
 ## Usage
