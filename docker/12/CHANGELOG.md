@@ -5,6 +5,13 @@ All notable changes to the Debian 12 Docker image will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [12.15.0](https://github.com/snowdreamtech/debian/compare/12-v12.15.0...12-v12.15.0) (2026-10-29)
+
+
+### 🚀 Features
+
+* align with base dev template and retain debian docker configs ([20b730b](https://github.com/snowdreamtech/debian/commit/20b730b1dbbd5f6931d36c2b5b29049d13d2aeee))
+
 ## [12.15.0](https://github.com/snowdreamtech/debian/compare/12-v12.15.0...12-v12.15.0) (2026-08-28)
 
 ### 🐛 Bug Fixes
