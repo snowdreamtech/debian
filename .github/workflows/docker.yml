@@ -31,9 +31,9 @@ name: "🐳 Docker Multi-Platform Build"
       - "v[0-9]+"
       - "V[0-9]+"
       - "debian-*"
-  schedule:
-    # Automatically run on every Day
-    - cron: "0 17 * * *"
+  # schedule:
+  #   # Automatically run on every Day
+  #   - cron: "0 17 * * *"
   workflow_dispatch:
     inputs:
       debian_version:
